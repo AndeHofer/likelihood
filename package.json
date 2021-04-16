@@ -49,5 +49,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "homepage": "https://AndeHofer.github.io/likelihood"
+  "homepage": "https://andehofer.github.io/likelihood"
 }
