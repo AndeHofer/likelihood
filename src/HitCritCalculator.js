@@ -3,7 +3,7 @@ import "./Calculator.css";
 import { dnd5Monsters } from "./data/monsterDnd5eSrd";
 import DynamicSelect from "./DynamicSelect";
 import ValueInput from "./NumberInput";
-import CheckboxInput from "./CheckboxInput";
+import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./RadioInputGroup";
 
