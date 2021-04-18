@@ -8,7 +8,7 @@ class DynamicSelect extends Component {
 
   handleChange(event) {
     this.props.onValueChange(event.target.value);
-    console.log(event.target.value);
+    //console.log(event.target.value);
   }
 
   renderOptions() {

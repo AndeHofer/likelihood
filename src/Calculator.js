@@ -1,13 +1,13 @@
 import React from "react";
 import "./Calculator.css";
-import { dnd5Monsters } from "./dnd5eSrdMonsters";
+import { dnd5Monsters } from "./monsterDnd5eSrd";
 import DynamicSelect from "./DynamicSelect";
-import RadioDisadvantage from "./RadioDisadvantage";
-import ValueInput from "./ValueInput";
+import ValueInput from "./NumberInput";
 import CheckboxInput from "./CheckboxInput";
-import { pf2Monsters } from "./pf2Monsters";
+import { pf2Monsters } from "./monstersPF2";
+import RadioInputGroup from "./RadioInputGroup";
 
-function calculateHitChance(attack, ac, adv, sys, hluck) {
+function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
   let result;
   if (sys === "DnD 5e") {
     if (adv === "Normal") {
@@ -61,10 +61,12 @@ function calculateHitChance(attack, ac, adv, sys, hluck) {
     }
   }
 
+  result = calculateSight(sight, sys, result);
+
   return Math.round(result * 100 * 100) / 100;
 }
 
-function calculateCritChance(attack, ac, adv, sys, hluck) {
+function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
   let result = Number(0);
   if (sys === "DnD 5e") {
     if (adv === "Normal") {
@@ -80,20 +82,35 @@ function calculateCritChance(attack, ac, adv, sys, hluck) {
     }
   } else {
     if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
-      let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
-      if (overZero > -1) {
-        if (overZero < 11) {
+      let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
+      if (maxHit > -1) {
+        // you can reach the crit section only with a 20, so you stay at 5% chance
+        if (maxHit < 11) {
           result = Number(1 / 20);
-        } else if (overZero > 29) {
+          // you are also with a one in the crit section, but you can loose the crit because of the one
+        } else if (maxHit > 28) {
           result = Number(19 / 20);
         } else {
-          result = (overZero - 10) / 20;
+          result = (maxHit - 9) / 20;
         }
       }
     }
   }
 
+  result = calculateSight(sight, sys, result);
+
   return Math.round(result * 100 * 100) / 100;
+}
+
+function calculateSight(sight, sys, result) {
+  if (sys === "PF 2e") {
+    if (sight === "Concealed") {
+      result = result * (16 / 20);
+    } else if (sight === "Hidden") {
+      result = result * (10 / 20);
+    }
+  }
+  return result;
 }
 
 class Calculator extends React.Component {
@@ -104,6 +121,8 @@ class Calculator extends React.Component {
       ac: "10",
       adv: "Normal",
       hluck: false,
+      agile: false,
+      sight: "Observed",
     };
 
     this.handleAcChange = this.handleAcChange.bind(this);
@@ -111,6 +130,8 @@ class Calculator extends React.Component {
     this.handleAdvChange = this.handleAdvChange.bind(this);
     this.handleHluckChange = this.handleHluckChange.bind(this);
     this.handleMonsterChange = this.handleMonsterChange.bind(this);
+    this.handleAgileChange = this.handleAgileChange.bind(this);
+    this.handleSightChange = this.handleSightChange.bind(this);
   }
 
   handleAcChange(value) {
@@ -129,8 +150,16 @@ class Calculator extends React.Component {
     this.setState({ hluck: !this.state.hluck });
   }
 
+  handleAgileChange(value) {
+    this.setState({ agile: !this.state.agile });
+  }
+
   handleMonsterChange(value) {
-    this.setState({ac: value});
+    this.setState({ ac: value });
+  }
+
+  handleSightChange(value) {
+    this.setState({ sight: value });
   }
 
   render() {
@@ -138,34 +167,85 @@ class Calculator extends React.Component {
     const attack = this.state.attack;
     const adv = this.state.adv;
     const hluck = this.state.hluck;
+    const agile = this.state.agile;
+    const sight = this.state.sight;
     const likelihoodHitDnD = calculateHitChance(
       attack,
       ac,
       adv,
       "DnD 5e",
-      hluck
+      hluck,
+      "Observed"
     );
     const likelihoodHitPF = calculateHitChance(
       attack,
       ac,
       "Normal",
       "PF 2e",
-      false
+      false,
+      sight
+    );
+
+    const likelihoodHitPF2nd = calculateHitChance(
+      agile ? attack - 4 : attack - 5,
+      ac,
+      "Normal",
+      "PF 2e",
+      false,
+      sight
+    );
+    const likelihoodHitPF3rd = calculateHitChance(
+      agile ? attack - 8 : attack - 10,
+      ac,
+      "Normal",
+      "PF 2e",
+      false,
+      sight
     );
     const likelihoodCritDnD = calculateCritChance(
       attack,
       ac,
       adv,
       "DnD 5e",
-      hluck
+      hluck,
+      "Observed"
     );
     const likelihoodCritPF = calculateCritChance(
       attack,
       ac,
       "Normal",
       "PF 2e",
-      false
+      false,
+      sight
     );
+    const likelihoodCritPF2nd = calculateCritChance(
+      agile ? attack - 4 : attack - 5,
+      ac,
+      "Normal",
+      "PF 2e",
+      false,
+      sight
+    );
+    const likelihoodCritPF3rd = calculateCritChance(
+      agile ? attack - 8 : attack - 10,
+      ac,
+      "Normal",
+      "PF 2e",
+      false,
+      sight
+    );
+
+    const radioAdv = [
+      { value: "Normal", label: "Normal" },
+      { value: "Advantage", label: "Advantage" },
+      { value: "Disadvantage", label: "Disadvantage" },
+    ];
+
+    const radioSight = [
+      { value: "Observed", label: "Observed" },
+      { value: "Concealed", label: "Concealed: DC 5 Flat Check" },
+      { value: "Hidden", label: "Hidden: DC 11 Flat Check" },
+    ];
 
     return (
       <div className="calculator">
@@ -220,17 +300,29 @@ class Calculator extends React.Component {
             </tr>
             <tr>
               <td>
-                <div className="adv-radio">
-                  <RadioDisadvantage
+                <div className="middle-relative">
+                  <RadioInputGroup
+                    radios={radioAdv}
                     onValueChange={this.handleAdvChange}
-                    value={adv}
+                    name="adv"
+                    selectedValue={adv}
+                  />
+                </div>
+              </td>
+              <td>
+                <div className="middle-relative">
+                  <RadioInputGroup
+                    radios={radioSight}
+                    onValueChange={this.handleSightChange}
+                    name="sight"
+                    selectedValue={sight}
                   />
                 </div>
               </td>
             </tr>
             <tr>
               <td>
-                <div className="adv-radio">
+                <div className="middle-relative">
                   <CheckboxInput
                     value={hluck}
                     onValueChange={this.handleHluckChange}
@@ -238,21 +330,36 @@ class Calculator extends React.Component {
                   Halflings Luck
                 </div>
               </td>
+              <td>
+                <div className="middle-relative">
+                  <CheckboxInput
+                    value={agile}
+                    onValueChange={this.handleAgileChange}
+                  />{" "}
+                  Agile Weapon
+                </div>
+              </td>
             </tr>
             <tr>
               <td>
-                <div>DnD Hit: {likelihoodHitDnD} %</div>
+                <div>Hit: {likelihoodHitDnD}%</div>
               </td>
               <td>
-                <div>PF Hit: {likelihoodHitPF} %</div>
+                <div>
+                  Hit: 1st: {likelihoodHitPF}%, 2nd: {likelihoodHitPF2nd}%, 3rd:{" "}
+                  {likelihoodHitPF3rd}%
+                </div>
               </td>
             </tr>
             <tr>
               <td>
-                <div>DnD Crit: {likelihoodCritDnD} %</div>
+                <div>Crit: {likelihoodCritDnD}%</div>
               </td>
               <td>
-                <div>PF Crit: {likelihoodCritPF} %</div>
+                <div>
+                  Crit: 1st: {likelihoodCritPF}%, 2nd: {likelihoodCritPF2nd}
+                  %, 3rd: {likelihoodCritPF3rd}%
+                </div>
               </td>
             </tr>
           </tbody>
