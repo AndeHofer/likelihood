@@ -7,112 +7,6 @@ import CheckboxInput from "./CheckboxInput";
 import { pf2Monsters } from "./monstersPF2";
 import RadioInputGroup from "./RadioInputGroup";
 
-function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
-  let result;
-  if (sys === "DnD 5e") {
-    if (adv === "Normal") {
-      result = Number(1 / 20);
-    } else if (adv === "Advantage") {
-      result = Number(1 / 20 + (19 / 20) * (1 / 20));
-    } else if (adv === "Disadvantage") {
-      result = Number(1 / 20 - (1 / 20) * (19 / 20));
-    }
-    if (hluck) {
-      result = result + (1 / 20) * (1 / 20);
-    }
-  } else {
-    result = Number(0);
-  }
-
-  if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
-    let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
-    if (overZero > 0) {
-      if (overZero > 19) {
-        if (overZero > 28 && sys === "PF 2e") {
-          result = Number(1);
-        } else {
-          result = Number(19 / 20);
-          if (sys === "DnD 5e") {
-            if (hluck) {
-              result = result + (19 / 20) * (1 - result);
-            }
-            if (adv === "Advantage") {
-              result = result + (19 / 20) * (1 - result);
-            } else if (adv === "Disadvantage") {
-              result = result - (1 / 20) * result;
-            }
-          }
-        }
-      } else {
-        result = overZero / 20;
-        if (sys === "DnD 5e") {
-          if (adv === "Advantage") {
-            result = result + (1 - result) * result;
-          } else if (adv === "Disadvantage") {
-            result = result - result * (1 - result);
-          }
-          if (hluck) {
-            result = result + (1 - result) * (1 / 20);
-          }
-        }
-      }
-    } else if (sys === "PF 2e" && overZero > -11) {
-      result = Number(1 / 20);
-    }
-  }
-
-  result = calculateSight(sight, sys, result);
-
-  return Math.round(result * 100 * 100) / 100;
-}
-
-function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
-  let result = Number(0);
-  if (sys === "DnD 5e") {
-    if (adv === "Normal") {
-      result = Number(1 / 20);
-    } else if (adv === "Advantage") {
-      result = Number(1 / 20 + (19 / 20) * (1 / 20));
-    } else {
-      result = Number(1 / 20 - (1 / 20) * (19 / 20));
-    }
-    // halflings luck gives you at 1 another chance to roll a 20
-    if (hluck) {
-      result = result + (1 / 20) * (1 / 20);
-    }
-  } else {
-    if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
-      let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
-      if (maxHit > -1) {
-        // you can reach the crit section only with a 20, so you stay at 5% chance
-        if (maxHit < 11) {
-          result = Number(1 / 20);
-          // you are also with a one in the crit section, but you can loose the crit because of the one
-        } else if (maxHit > 28) {
-          result = Number(19 / 20);
-        } else {
-          result = (maxHit - 9) / 20;
-        }
-      }
-    }
-  }
-
-  result = calculateSight(sight, sys, result);
-
-  return Math.round(result * 100 * 100) / 100;
-}
-
-function calculateSight(sight, sys, result) {
-  if (sys === "PF 2e") {
-    if (sight === "Concealed") {
-      result = result * (16 / 20);
-    } else if (sight === "Hidden") {
-      result = result * (10 / 20);
-    }
-  }
-  return result;
-}
-
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
@@ -367,6 +261,112 @@ class Calculator extends React.Component {
       </div>
     );
   }
+}
+
+function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
+  let result;
+  if (sys === "DnD 5e") {
+    if (adv === "Normal") {
+      result = Number(1 / 20);
+    } else if (adv === "Advantage") {
+      result = Number(1 / 20 + (19 / 20) * (1 / 20));
+    } else if (adv === "Disadvantage") {
+      result = Number(1 / 20 - (1 / 20) * (19 / 20));
+    }
+    if (hluck) {
+      result = result + (1 / 20) * (1 / 20);
+    }
+  } else {
+    result = Number(0);
+  }
+
+  if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
+    let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
+    if (overZero > 0) {
+      if (overZero > 19) {
+        if (overZero > 28 && sys === "PF 2e") {
+          result = Number(1);
+        } else {
+          result = Number(19 / 20);
+          if (sys === "DnD 5e") {
+            if (hluck) {
+              result = result + (19 / 20) * (1 - result);
+            }
+            if (adv === "Advantage") {
+              result = result + (19 / 20) * (1 - result);
+            } else if (adv === "Disadvantage") {
+              result = result - (1 / 20) * result;
+            }
+          }
+        }
+      } else {
+        result = (overZero + 1) / 20;
+        if (sys === "DnD 5e") {
+          if (adv === "Advantage") {
+            result = result + (1 - result) * result;
+          } else if (adv === "Disadvantage") {
+            result = result - result * (1 - result);
+          }
+          if (hluck) {
+            result = result + (1 - result) * (1 / 20);
+          }
+        }
+      }
+    } else if (sys === "PF 2e" && overZero > -11) {
+      result = Number(1 / 20);
+    }
+  }
+
+  result = calculateSight(sight, sys, result);
+
+  return Math.round(result * 100 * 100) / 100;
+}
+
+function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
+  let result = Number(0);
+  if (sys === "DnD 5e") {
+    if (adv === "Normal") {
+      result = Number(1 / 20);
+    } else if (adv === "Advantage") {
+      result = Number(1 / 20 + (19 / 20) * (1 / 20));
+    } else {
+      result = Number(1 / 20 - (1 / 20) * (19 / 20));
+    }
+    // halflings luck gives you at 1 another chance to roll a 20
+    if (hluck) {
+      result = result + (1 / 20) * (1 / 20);
+    }
+  } else {
+    if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
+      let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
+      if (maxHit > -1) {
+        // you can reach the crit section only with a 20, so you stay at 5% chance
+        if (maxHit < 11) {
+          result = Number(1 / 20);
+          // you are also with a one in the crit section, but you can loose the crit because of the one
+        } else if (maxHit > 28) {
+          result = Number(19 / 20);
+        } else {
+          result = (maxHit - 9) / 20;
+        }
+      }
+    }
+  }
+
+  result = calculateSight(sight, sys, result);
+
+  return Math.round(result * 100 * 100) / 100;
+}
+
+function calculateSight(sight, sys, result) {
+  if (sys === "PF 2e") {
+    if (sight === "Concealed") {
+      result = result * (16 / 20);
+    } else if (sight === "Hidden") {
+      result = result * (10 / 20);
+    }
+  }
+  return result;
 }
 
 export default Calculator;
