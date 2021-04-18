@@ -1,11 +1,11 @@
 import React from "react";
 import "./Calculator.css";
 import { dnd5Monsters } from "./data/monsterDnd5eSrd";
-import DynamicSelect from "./DynamicSelect";
-import ValueInput from "./NumberInput";
+import DynamicSelect from "./components/DynamicSelect";
+import ValueInput from "./components/NumberInput";
 import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
-import RadioInputGroup from "./RadioInputGroup";
+import RadioInputGroup from "./components/RadioInputGroup";
 
 class HitCritCalculator extends React.Component {
   constructor(props) {
@@ -81,7 +81,7 @@ class HitCritCalculator extends React.Component {
     );
 
     const likelihoodHitPF2nd = calculateHitChance(
-      agile ? attack - 4 : attack - 5,
+      attack ? (agile ? attack - 4 : attack - 5) : attack,
       ac,
       "Normal",
       "PF 2e",
@@ -89,7 +89,7 @@ class HitCritCalculator extends React.Component {
       sight
     );
     const likelihoodHitPF3rd = calculateHitChance(
-      agile ? attack - 8 : attack - 10,
+      attack ? (agile ? attack - 8 : attack - 10) : attack,
       ac,
       "Normal",
       "PF 2e",
@@ -113,7 +113,7 @@ class HitCritCalculator extends React.Component {
       sight
     );
     const likelihoodCritPF2nd = calculateCritChance(
-      agile ? attack - 4 : attack - 5,
+      attack ? (agile ? attack - 4 : attack - 5) : attack,
       ac,
       "Normal",
       "PF 2e",
@@ -121,7 +121,7 @@ class HitCritCalculator extends React.Component {
       sight
     );
     const likelihoodCritPF3rd = calculateCritChance(
-      agile ? attack - 8 : attack - 10,
+      attack ? (agile ? attack - 8 : attack - 10) : attack,
       ac,
       "Normal",
       "PF 2e",
@@ -264,60 +264,28 @@ class HitCritCalculator extends React.Component {
 }
 
 function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
-  let result;
-  if (sys === "DnD 5e") {
-    if (adv === "Normal") {
-      result = Number(1 / 20);
-    } else if (adv === "Advantage") {
-      result = Number(1 / 20 + (19 / 20) * (1 / 20));
-    } else if (adv === "Disadvantage") {
-      result = Number(1 / 20 - (1 / 20) * (19 / 20));
-    }
-    if (hluck) {
-      result = result + (1 / 20) * (1 / 20);
-    }
-  } else {
-    result = Number(0);
-  }
+  let result = sys === "DnD 5e" ? Number(1 / 20) : Number(0);
 
-  if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
+  if (ac && attack) {
     let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
-    if (overZero > 0) {
+    if (overZero > -1) {
       if (overZero > 19) {
         if (overZero > 28 && sys === "PF 2e") {
           result = Number(1);
         } else {
           result = Number(19 / 20);
-          if (sys === "DnD 5e") {
-            if (hluck) {
-              result = result + (19 / 20) * (1 - result);
-            }
-            if (adv === "Advantage") {
-              result = result + (19 / 20) * (1 - result);
-            } else if (adv === "Disadvantage") {
-              result = result - (1 / 20) * result;
-            }
-          }
         }
       } else {
-        result = (overZero + 1) / 20;
-        if (sys === "DnD 5e") {
-          if (adv === "Advantage") {
-            result = result + (1 - result) * result;
-          } else if (adv === "Disadvantage") {
-            result = result - result * (1 - result);
-          }
-          if (hluck) {
-            result = result + (1 - result) * (1 / 20);
-          }
-        }
+        result = (overZero === 19 ? overZero : overZero + 1) / 20;
       }
     } else if (sys === "PF 2e" && overZero > -11) {
       result = Number(1 / 20);
     }
-  }
 
-  result = calculateSight(sight, sys, result);
+    result = calculateAdvHit(adv, sys, result, overZero);
+    result = calculateHluckHit(hluck, sys, result, overZero);
+    result = calculateSight(sight, sys, result);
+  }
 
   return Math.round(result * 100 * 100) / 100;
 }
@@ -337,7 +305,7 @@ function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
       result = result + (1 / 20) * (1 / 20);
     }
   } else {
-    if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
+    if (ac && attack) {
       let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
       if (maxHit > -1) {
         // you can reach the crit section only with a 20, so you stay at 5% chance
@@ -364,6 +332,35 @@ function calculateSight(sight, sys, result) {
       result = result * (16 / 20);
     } else if (sight === "Hidden") {
       result = result * (10 / 20);
+    }
+  }
+  return result;
+}
+
+function calculateAdvHit(adv, sys, result, overZero) {
+  if (sys === "DnD 5e") {
+    if (adv === "Advantage") {
+      if (overZero > -1) {
+        result =
+          result + (1 - result) * ((overZero > 18 ? 19 : overZero + 1) / 20);
+      } else {
+        // add the chance of a 20 next dice throw...
+        result = result + (1 - result) * (1 / 20);
+      }
+    } else if (adv === "Disadvantage") {
+      result = result - result * (1 - (overZero > 18 ? 19 : overZero + 1) / 20);
+    }
+  }
+  return result;
+}
+function calculateHluckHit(hluck, sys, result, overZero) {
+  if (sys === "DnD 5e" && hluck) {
+    if (overZero > -1) {
+      result =
+        result +
+        (1 - result) * (1 / 20) * ((overZero > 18 ? 19 : overZero + 1) / 20);
+    } else {
+      result = result + (1 / 20) * (1 / 20);
     }
   }
   return result;

@@ -7,7 +7,7 @@ import DamageCalculator from "./DamageCalculator";
 class MainTab extends React.Component {
   render() {
     return (
-      <Tabs defaultActiveKey="hitCritCalc">
+      <Tabs defaultActiveKey="hitCritCalc" >
         <Tab eventKey="hitCritCalc" title="Hit Crit Calculator">
           <HitCritCalculator />
         </Tab>
