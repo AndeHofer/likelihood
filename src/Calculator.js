@@ -1,18 +1,24 @@
 import React from "react";
 import "./Calculator.css";
+import { dnd5Monsters } from "./dnd5eSrdMonsters";
+import DynamicSelect from "./DynamicSelect";
+import RadioDisadvantage from "./RadioDisadvantage";
+import ValueInput from "./ValueInput";
+import CheckboxInput from "./CheckboxInput";
+import { pf2Monsters } from "./pf2Monsters";
 
 function calculateHitChance(attack, ac, adv, sys, hluck) {
   let result;
   if (sys === "DnD 5e") {
     if (adv === "Normal") {
-      result = Number(0.05);
+      result = Number(1 / 20);
     } else if (adv === "Advantage") {
-      result = Number(0.05 + 0.95 * 0.05);
+      result = Number(1 / 20 + (19 / 20) * (1 / 20));
     } else if (adv === "Disadvantage") {
-      result = Number(0.05 - 0.05 * 0.95);
+      result = Number(1 / 20 - (1 / 20) * (19 / 20));
     }
     if (hluck) {
-      result = result + 0.05 * 0.05;
+      result = result + (1 / 20) * (1 / 20);
     }
   } else {
     result = Number(0);
@@ -22,7 +28,7 @@ function calculateHitChance(attack, ac, adv, sys, hluck) {
     let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
     if (overZero > 0) {
       if (overZero > 19) {
-        if (overZero > 29 && sys === "PF 2e") {
+        if (overZero > 28 && sys === "PF 2e") {
           result = Number(1);
         } else {
           result = Number(19 / 20);
@@ -51,7 +57,7 @@ function calculateHitChance(attack, ac, adv, sys, hluck) {
         }
       }
     } else if (sys === "PF 2e" && overZero > -11) {
-      result = Number(0.05);
+      result = Number(1 / 20);
     }
   }
 
@@ -62,24 +68,24 @@ function calculateCritChance(attack, ac, adv, sys, hluck) {
   let result = Number(0);
   if (sys === "DnD 5e") {
     if (adv === "Normal") {
-      result = Number(0.05);
+      result = Number(1 / 20);
     } else if (adv === "Advantage") {
-      result = Number(0.05 + 0.95 * 0.05);
+      result = Number(1 / 20 + (19 / 20) * (1 / 20));
     } else {
-      result = Number(0.05 - 0.05 * 0.95);
+      result = Number(1 / 20 - (1 / 20) * (19 / 20));
     }
     // halflings luck gives you at 1 another chance to roll a 20
     if (hluck) {
-      result = result + 0.05 * 0.05;
+      result = result + (1 / 20) * (1 / 20);
     }
   } else {
     if (!Number.isNaN(ac) && !Number.isNaN(attack)) {
       let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
       if (overZero > -1) {
         if (overZero < 11) {
-          result = Number(0.05);
+          result = Number(1 / 20);
         } else if (overZero > 29) {
-          result = Number(0.95);
+          result = Number(19 / 20);
         } else {
           result = (overZero - 10) / 20;
         }
@@ -90,103 +96,21 @@ function calculateCritChance(attack, ac, adv, sys, hluck) {
   return Math.round(result * 100 * 100) / 100;
 }
 
-class RadioDisadvantage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    this.props.onValueChange(e.target.value);
-  }
-
-  render() {
-    const value = this.props.value;
-    return (
-      <div>
-        <input
-          type="radio"
-          value="Normal"
-          checked={value === "Normal"}
-          name="adv"
-          onChange={this.handleChange}
-        />{" "}
-        Normal
-        <br />
-        <input
-          type="radio"
-          value="Advantage"
-          checked={value === "Advantage"}
-          name="adv"
-          onChange={this.handleChange}
-        />{" "}
-        Advantage
-        <br />
-        <input
-          type="radio"
-          value="Disadvantage"
-          name="adv"
-          checked={value === "Disadvantage"}
-          onChange={this.handleChange}
-        />{" "}
-        Disadvantage
-      </div>
-    );
-  }
-}
-
-class ValueInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    this.props.onValueChange(e.target.value);
-  }
-
-  render() {
-    const value = this.props.value;
-    return (
-      <div className="inputField">
-        <input
-          type="number"
-          value={value}
-          onChange={this.handleChange}
-          max="1000"
-          min="-1000"
-        />
-      </div>
-    );
-  }
-}
-
-class CheckboxInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    this.props.onValueChange(e.target.value);
-  }
-  render() {
-    const value = this.props.value;
-    return (
-      <input type="checkbox" onChange={this.handleChange} checked={value} />
-    );
-  }
-}
-
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { attack: "0", ac: "10", adv: "Normal", hluck: false };
+    this.state = {
+      attack: "0",
+      ac: "10",
+      adv: "Normal",
+      hluck: false,
+    };
 
     this.handleAcChange = this.handleAcChange.bind(this);
     this.handleAttackChange = this.handleAttackChange.bind(this);
     this.handleAdvChange = this.handleAdvChange.bind(this);
     this.handleHluckChange = this.handleHluckChange.bind(this);
+    this.handleMonsterChange = this.handleMonsterChange.bind(this);
   }
 
   handleAcChange(value) {
@@ -203,6 +127,10 @@ class Calculator extends React.Component {
 
   handleHluckChange(value) {
     this.setState({ hluck: !this.state.hluck });
+  }
+
+  handleMonsterChange(value) {
+    this.setState({ac: value});
   }
 
   render() {
@@ -259,6 +187,26 @@ class Calculator extends React.Component {
               <td>Armor Class: </td>
               <td>
                 <ValueInput value={ac} onValueChange={this.handleAcChange} />
+              </td>
+            </tr>
+            <tr>
+              <td>Dnd Monster:</td>
+              <td colSpan="3">
+                <DynamicSelect
+                  options={dnd5Monsters}
+                  onValueChange={this.handleMonsterChange}
+                  acName="Armor Class"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>PF Monster:</td>
+              <td colSpan="3">
+                <DynamicSelect
+                  options={pf2Monsters}
+                  onValueChange={this.handleMonsterChange}
+                  acName="AC"
+                />
               </td>
             </tr>
           </tbody>
