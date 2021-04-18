@@ -269,14 +269,10 @@ function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
   if (ac && attack) {
     let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
     if (overZero > -1) {
-      if (overZero > 19) {
-        if (overZero > 28 && sys === "PF 2e") {
-          result = Number(1);
-        } else {
-          result = Number(19 / 20);
-        }
+      if (overZero > 28 && sys === "PF 2e") {
+        result = Number(1);
       } else {
-        result = (overZero === 19 ? overZero : overZero + 1) / 20;
+        result = (overZero > 18 ? 19 : overZero + 1) / 20;
       }
     } else if (sys === "PF 2e" && overZero > -11) {
       result = Number(1 / 20);
@@ -358,7 +354,11 @@ function calculateHluckHit(hluck, sys, result, overZero) {
     if (overZero > -1) {
       result =
         result +
-        (1 - result) * (1 / 20) * ((overZero > 18 ? 19 : overZero + 1) / 20);
+        (1 - result) *
+          ((overZero > 18 ? 19 : overZero + 1) / 20) *
+          // here we look how many dices throws are possible at this time to not match the hit, because only a one can be rethrown
+          // so when here is more then one possible dice (the one), we need to lower the probabilty that the halflings luck does anything..
+          (1 / (20 - (overZero > 18 ? 19 : overZero)));
     } else {
       result = result + (1 / 20) * (1 / 20);
     }
