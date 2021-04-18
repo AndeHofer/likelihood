@@ -7,7 +7,7 @@ import CheckboxInput from "./CheckboxInput";
 import { pf2Monsters } from "./monstersPF2";
 import RadioInputGroup from "./RadioInputGroup";
 
-class Calculator extends React.Component {
+class HitCritCalculator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -147,7 +147,7 @@ class Calculator extends React.Component {
           <tbody>
             <tr>
               <th colSpan="4" className="input-header">
-                Attack Input
+                Hit & Crit Input
               </th>
             </tr>
             <tr>
@@ -369,4 +369,4 @@ function calculateSight(sight, sys, result) {
   return result;
 }
 
-export default Calculator;
+export default HitCritCalculator;
