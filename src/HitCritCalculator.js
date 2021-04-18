@@ -1,10 +1,10 @@
 import React from "react";
 import "./Calculator.css";
-import { dnd5Monsters } from "./monsterDnd5eSrd";
+import { dnd5Monsters } from "./data/monsterDnd5eSrd";
 import DynamicSelect from "./DynamicSelect";
 import ValueInput from "./NumberInput";
 import CheckboxInput from "./CheckboxInput";
-import { pf2Monsters } from "./monstersPF2";
+import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./RadioInputGroup";
 
 class HitCritCalculator extends React.Component {
