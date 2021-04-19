@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import RadioInput from "./RadioInput";
 
 class InputRadioGroup extends Component {
-  constructor(props) {
-    super(props);
-    this.renderRadios = this.renderRadios.bind(this);
-  }
 
   renderRadios() {
     const { radios } = this.props;

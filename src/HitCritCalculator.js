@@ -16,7 +16,8 @@ class HitCritCalculator extends React.Component {
       adv: "Normal",
       hluck: false,
       agile: false,
-      sight: "Observed",
+      sight: 0,
+      keenEyes: false,
     };
 
     this.handleAcChange = this.handleAcChange.bind(this);
@@ -26,6 +27,7 @@ class HitCritCalculator extends React.Component {
     this.handleMonsterChange = this.handleMonsterChange.bind(this);
     this.handleAgileChange = this.handleAgileChange.bind(this);
     this.handleSightChange = this.handleSightChange.bind(this);
+    this.handleKeenEyesChange = this.handleKeenEyesChange.bind(this);
   }
 
   handleAcChange(value) {
@@ -53,7 +55,12 @@ class HitCritCalculator extends React.Component {
   }
 
   handleSightChange(value) {
+    //console.log(value);
     this.setState({ sight: value });
+  }
+
+  handleKeenEyesChange(value) {
+    this.setState({ keenEyes: !this.state.keenEyes });
   }
 
   render() {
@@ -62,14 +69,16 @@ class HitCritCalculator extends React.Component {
     const adv = this.state.adv;
     const hluck = this.state.hluck;
     const agile = this.state.agile;
-    const sight = this.state.sight;
+    const sight = Number(this.state.sight);
+    const keenEyes = this.state.keenEyes;
+    const sightEndValue = keenEyes && sight > 0 ? sight - 2 : sight;
     const likelihoodHitDnD = calculateHitChance(
       attack,
       ac,
       adv,
       "DnD 5e",
       hluck,
-      "Observed"
+      0
     );
     const likelihoodHitPF = calculateHitChance(
       attack,
@@ -77,7 +86,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
 
     const likelihoodHitPF2nd = calculateHitChance(
@@ -86,7 +95,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
     const likelihoodHitPF3rd = calculateHitChance(
       attack ? (agile ? attack - 8 : attack - 10) : attack,
@@ -94,7 +103,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
     const likelihoodCritDnD = calculateCritChance(
       attack,
@@ -102,7 +111,7 @@ class HitCritCalculator extends React.Component {
       adv,
       "DnD 5e",
       hluck,
-      "Observed"
+      0
     );
     const likelihoodCritPF = calculateCritChance(
       attack,
@@ -110,7 +119,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
     const likelihoodCritPF2nd = calculateCritChance(
       attack ? (agile ? attack - 4 : attack - 5) : attack,
@@ -118,7 +127,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
     const likelihoodCritPF3rd = calculateCritChance(
       attack ? (agile ? attack - 8 : attack - 10) : attack,
@@ -126,7 +135,7 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sight
+      sightEndValue
     );
 
     const radioAdv = [
@@ -135,10 +144,11 @@ class HitCritCalculator extends React.Component {
       { value: "Disadvantage", label: "Disadvantage" },
     ];
 
+    // value is how many dices can fail, DC 5 is 4, DC 11 is 10 dices which can fail, keenEyes alters this too
     const radioSight = [
-      { value: "Observed", label: "Observed" },
-      { value: "Concealed", label: "Concealed: DC 5 Flat Check" },
-      { value: "Hidden", label: "Hidden: DC 11 Flat Check" },
+      { value: 0, label: "Observed" },
+      { value: 4, label: "Concealed" },
+      { value: 10, label: "Hidden" },
     ];
 
     return (
@@ -211,6 +221,11 @@ class HitCritCalculator extends React.Component {
                     name="sight"
                     selectedValue={sight}
                   />
+                  <CheckboxInput
+                    value={keenEyes}
+                    onValueChange={this.handleKeenEyesChange}
+                  />{" "}
+                  Keen Eyes
                 </div>
               </td>
             </tr>
@@ -236,23 +251,47 @@ class HitCritCalculator extends React.Component {
             </tr>
             <tr>
               <td>
-                <div>Hit: {likelihoodHitDnD}%</div>
+                <div>Hit: {likelihoodHitDnD.value}%</div>
               </td>
               <td>
                 <div>
-                  Hit: 1st: {likelihoodHitPF}%, 2nd: {likelihoodHitPF2nd}%, 3rd:{" "}
-                  {likelihoodHitPF3rd}%
+                  Hit: 1st: {likelihoodHitPF.value}%, 2nd:{" "}
+                  {likelihoodHitPF2nd.value}%, 3rd: {likelihoodHitPF3rd.value}%
                 </div>
               </td>
             </tr>
             <tr>
               <td>
-                <div>Crit: {likelihoodCritDnD}%</div>
+                <div>Crit: {likelihoodCritDnD.value}%</div>
               </td>
               <td>
                 <div>
-                  Crit: 1st: {likelihoodCritPF}%, 2nd: {likelihoodCritPF2nd}
-                  %, 3rd: {likelihoodCritPF3rd}%
+                  Crit: 1st: {likelihoodCritPF.value}%, 2nd:{" "}
+                  {likelihoodCritPF2nd.value}
+                  %, 3rd: {likelihoodCritPF3rd.value}%
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan="2">
+                <div className="formula-div">
+                  <div>
+                    {likelihoodHitDnD.text +
+                      "\n" +
+                      likelihoodCritDnD.text +
+                      "\n1st " +
+                      likelihoodHitPF.text +
+                      "2nd " +
+                      likelihoodHitPF2nd.text +
+                      "3rd " +
+                      likelihoodHitPF3rd.text +
+                      "\n1st " +
+                      likelihoodCritPF.text +
+                      "2nd " +
+                      likelihoodCritPF2nd.text +
+                      "3rd " +
+                      likelihoodCritPF3rd.text}
+                  </div>
                 </div>
               </td>
             </tr>
@@ -264,103 +303,225 @@ class HitCritCalculator extends React.Component {
 }
 
 function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
-  let result = sys === "DnD 5e" ? Number(1 / 20) : Number(0);
+  var result = {
+    text: sys === "DnD 5e" ? "DnD5e Hit: " : "PF2e Hit: ",
+    value: Number(0),
+  };
+  result.value = sys === "DnD 5e" ? Number(1 / 20) : Number(0);
 
-  if (ac && attack) {
+  if ((ac || ac === 0) && (attack || attack === 0)) {
     let overZero = Number(parseInt(attack) + 20 - parseInt(ac));
     if (overZero > -1) {
       if (overZero > 28 && sys === "PF 2e") {
-        result = Number(1);
+        result.text = result.text + "(" + overZero + " > 28) -> 1\n";
+        result.value = Number(1);
       } else {
-        result = (overZero > 18 ? 19 : overZero + 1) / 20;
+        result.value = (overZero > 18 ? 19 : overZero + 1) / 20;
+        result.text =
+          result.text +
+          "(" +
+          overZero +
+          " > 18 ? 19 : " +
+          overZero +
+          " + 1) -> " +
+          (overZero > 18 ? 19 : overZero + 1) +
+          " / 20 = " +
+          fourDecimalPlaces(result.value) +
+          "\n";
       }
     } else if (sys === "PF 2e" && overZero > -11) {
-      result = Number(1 / 20);
+      result.text =
+        result.text + "(0 > " + overZero + " > -11) -> 1/20 = 0.05\n";
+      result.value = Number(1 / 20);
+    } else {
+      result.text =
+        sys === "DnD 5e"
+          ? result.text + " (1 / 20)  = 0.05\n"
+          : result.text + "(" + overZero + " < -10) -> 0\n";
     }
 
     result = calculateAdvHit(adv, sys, result, overZero);
-    result = calculateHluckHit(hluck, sys, result, overZero);
+    result = calculateHluckHit(hluck, sys, result, overZero, adv);
     result = calculateSight(sight, sys, result);
+  } else {
+    if (sys === "DnD 5e") {
+      result.text = result.text + "0.05\n";
+    } else {
+      result.text = result.text + "0\n";
+    }
   }
-
-  return Math.round(result * 100 * 100) / 100;
+  result.value = Math.round(result.value * 100 * 100) / 100;
+  return result;
 }
 
 function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
-  let result = Number(0);
+  let result = {
+    text: sys === "DnD 5e" ? "DnD5e Crit: " : "PF2e Crit: ",
+    value: Number(0),
+  };
   if (sys === "DnD 5e") {
     if (adv === "Normal") {
-      result = Number(1 / 20);
+      result.text = result.text + "(1 / 20)";
+      result.value = Number(1 / 20);
     } else if (adv === "Advantage") {
-      result = Number(1 / 20 + (19 / 20) * (1 / 20));
+      result.text = result.text + "1 / 20 + (1 / 20) * (19 / 20)";
+      result.value = Number(1 / 20 + (1 / 20) * (19 / 20));
     } else {
-      result = Number(1 / 20 - (1 / 20) * (19 / 20));
+      result.text = result.text + "1 / 20 - (1 / 20) * (19 / 20)";
+      result.value = Number(1 / 20 - (1 / 20) * (19 / 20));
     }
+    result.text = result.text + " = " + fourDecimalPlaces(result.value) + "\n";
     // halflings luck gives you at 1 another chance to roll a 20
     if (hluck) {
-      result = result + (1 / 20) * (1 / 20);
+      result.text =
+        result.text +
+        "  H Luck: " +
+        fourDecimalPlaces(result.value) +
+        " + (1 / 20) * (1 / 20)";
+      result.value = result.value + (1 / 20) * (1 / 20);
+      result.text =
+        result.text + " = " + fourDecimalPlaces(result.value) + "\n";
     }
   } else {
-    if (ac && attack) {
+    if ((ac || ac === 0) && (attack || attack === 0)) {
       let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
       if (maxHit > -1) {
         // you can reach the crit section only with a 20, so you stay at 5% chance
         if (maxHit < 11) {
-          result = Number(1 / 20);
+          result.text = result.text + "(" + maxHit + " < 11) -> 1 / 20";
+          result.value = Number(1 / 20);
           // you are also with a one in the crit section, but you can loose the crit because of the one
         } else if (maxHit > 28) {
-          result = Number(19 / 20);
+          result.text = result.text + "(" + maxHit + " > 28) -> 19 / 20";
+          result.value = Number(19 / 20);
         } else {
-          result = (maxHit - 9) / 20;
+          result.text =
+            result.text +
+            "(11 < " +
+            maxHit +
+            " < 28) -> (" +
+            maxHit +
+            " - 9) / 20";
+          result.value = (maxHit - 9) / 20;
         }
+        result.text =
+          result.text + " = " + fourDecimalPlaces(result.value) + "\n";
+      } else {
+        result.text = result.text + "(" + maxHit + " < 0) -> 0\n";
       }
     }
   }
 
   result = calculateSight(sight, sys, result);
-
-  return Math.round(result * 100 * 100) / 100;
+  result.value = Math.round(result.value * 100 * 100) / 100;
+  return result;
 }
 
 function calculateSight(sight, sys, result) {
-  if (sys === "PF 2e") {
-    if (sight === "Concealed") {
-      result = result * (16 / 20);
-    } else if (sight === "Hidden") {
-      result = result * (10 / 20);
-    }
+  if (sys === "PF 2e" && sight > 0) {
+    result.text =
+      result.text +
+      "  Sight: " +
+      fourDecimalPlaces(result.value) +
+      " * ((20 - " +
+      sight +
+      ") / 20)";
+    result.value = result.value * ((20 - Number(sight)) / 20);
+    result.text = result.text + " = " + fourDecimalPlaces(result.value) + "\n";
   }
+
   return result;
+}
+
+function fourDecimalPlaces(number) {
+  return Math.round(number * 10000) / 10000;
 }
 
 function calculateAdvHit(adv, sys, result, overZero) {
   if (sys === "DnD 5e") {
     if (adv === "Advantage") {
       if (overZero > -1) {
-        result =
-          result + (1 - result) * ((overZero > 18 ? 19 : overZero + 1) / 20);
+        result.text =
+          result.text +
+          "  Adv: " +
+          result.value +
+          " + (1 - " +
+          result.value +
+          ") * " +
+          result.value;
+        result.value = result.value + (1 - result.value) * result.value;
+        result.text =
+          result.text + " = " + fourDecimalPlaces(result.value) + "\n";
       } else {
         // add the chance of a 20 next dice throw...
-        result = result + (1 - result) * (1 / 20);
+        result.text =
+          result.text +
+          "  Adv: " +
+          result.value +
+          " + (1 - " +
+          result.value +
+          ") * (1 / 20)";
+        result.value = result.value + (1 - result.value) * (1 / 20);
+        result.text =
+          result.text + " = " + fourDecimalPlaces(result.value) + "\n";
       }
     } else if (adv === "Disadvantage") {
-      result = result - result * (1 - (overZero > 18 ? 19 : overZero + 1) / 20);
+      result.text =
+        result.text + "  Disadv: " + result.value + " * " + result.value;
+      result.value = result.value + (1 - result.value) * (1 / 20);
+      // if 2 probabilities success are needed, multiply (https://www.omnicalculator.com/statistics/dice)
+      result.value = result.value * result.value;
+      result.text =
+        result.text + " = " + fourDecimalPlaces(result.value) + "\n";
     }
   }
   return result;
 }
-function calculateHluckHit(hluck, sys, result, overZero) {
+function calculateHluckHit(hluck, sys, result, overZero, adv) {
   if (sys === "DnD 5e" && hluck) {
     if (overZero > -1) {
-      result =
-        result +
-        (1 - result) *
+      result.text =
+        result.text +
+        "  H Luck: " +
+        fourDecimalPlaces(result.value) +
+        " + (1 - " +
+        fourDecimalPlaces(result.value) +
+        ") * ((" +
+        overZero +
+        " > 18 ? 19 : " +
+        overZero +
+        " + 1) ->" +
+        (overZero > 18 ? 19 : overZero + 1) +
+        " / 20) *\n     (1 / (20 - (" +
+        overZero +
+        " > 18 ? 19 : (" +
+        overZero +
+        " + 1)) -> " +
+        (overZero > 18 ? 19 : overZero + 1) +
+        "))";
+      if (adv !== "Normal") {
+        result.text = result.text + " * 2";
+      }
+      // here we take the probability and add the fail probability multiplied with the chance to succeed now.
+      // to roll a 1 is (1/20) and if adv/disadv it is (2/20) because we roll 2 times
+      result.value =
+        result.value +
+        (1 - result.value) *
           ((overZero > 18 ? 19 : overZero + 1) / 20) *
-          // here we look how many dices throws are possible at this time to not match the hit, because only a one can be rethrown
-          // so when here is more then one possible dice (the one), we need to lower the probabilty that the halflings luck does anything..
-          (1 / (20 - (overZero > 18 ? 19 : overZero)));
+          (1 / (20 - (overZero > 18 ? 19 : overZero + 1)));
+      //* ((1 / 20) * (adv !== "Normal" ? 2 : 1));
+      result.text =
+        result.text + " = " + fourDecimalPlaces(result.value) + "\n";
     } else {
-      result = result + (1 / 20) * (1 / 20);
+      result.text =
+        result.text +
+        "  H Luck: " +
+        fourDecimalPlaces(result.value) +
+        " + (1 / 20) * (1 / 20)";
+      // only have success with 20 (0.05), so we add the possibility that it was a one and the possiltity to throw then a 20 ((1/20)*(1/20))
+      result.value = result.value + (1 / 20) * (1 / 20);
+      result.text =
+        result.text + " = " + fourDecimalPlaces(result.value) + "\n";
     }
   }
   return result;

@@ -6,7 +6,7 @@ class RadioInput extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
-    //console.log(this.props.value + " " + e.target.value)
+    //console.log(this.props.value + " " + e.target.value + " " + this.props.selectedValue);
     this.props.onValueChange(e.target.value);
   }
 

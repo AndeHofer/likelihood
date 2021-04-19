@@ -47,3 +47,13 @@
   position: relative;
   left: 60px;
 }
+
+.textarea {
+  resize: none;
+  height: 300px;
+  width: 100%;
+}
+
+.formula-div {
+  white-space: pre-wrap;
+}
