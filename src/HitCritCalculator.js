@@ -6,6 +6,7 @@ import ValueInput from "./components/NumberInput";
 import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./components/RadioInputGroup";
+import CollapseButton from "./components/CollapseButton";
 
 class HitCritCalculator extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class HitCritCalculator extends React.Component {
       agile: false,
       sight: 0,
       keenEyes: false,
+      collapseOpen: true,
     };
 
     this.handleAcChange = this.handleAcChange.bind(this);
@@ -28,6 +30,7 @@ class HitCritCalculator extends React.Component {
     this.handleAgileChange = this.handleAgileChange.bind(this);
     this.handleSightChange = this.handleSightChange.bind(this);
     this.handleKeenEyesChange = this.handleKeenEyesChange.bind(this);
+    this.handleCollapseButtonClick = this.handleCollapseButtonClick.bind(this);
   }
 
   handleAcChange(value) {
@@ -63,6 +66,10 @@ class HitCritCalculator extends React.Component {
     this.setState({ keenEyes: !this.state.keenEyes });
   }
 
+  handleCollapseButtonClick(value) {
+    this.setState({ collapseOpen: !this.state.collapseOpen });
+  }
+
   render() {
     const ac = this.state.ac;
     const attack = this.state.attack;
@@ -72,6 +79,7 @@ class HitCritCalculator extends React.Component {
     const sight = Number(this.state.sight);
     const keenEyes = this.state.keenEyes;
     const sightEndValue = keenEyes && sight > 0 ? sight - 2 : sight;
+    const collapseOpen = this.state.collapseOpen;
     const likelihoodHitDnD = calculateHitChance(
       attack,
       ac,
@@ -150,6 +158,23 @@ class HitCritCalculator extends React.Component {
       { value: 4, label: "Concealed" },
       { value: 10, label: "Hidden" },
     ];
+
+    const collapseText =
+      likelihoodHitDnD.text +
+      "\n" +
+      likelihoodCritDnD.text +
+      "\n1st " +
+      likelihoodHitPF.text +
+      "2nd " +
+      likelihoodHitPF2nd.text +
+      "3rd " +
+      likelihoodHitPF3rd.text +
+      "\n1st " +
+      likelihoodCritPF.text +
+      "2nd " +
+      likelihoodCritPF2nd.text +
+      "3rd " +
+      likelihoodCritPF3rd.text;
 
     return (
       <div className="calculator">
@@ -251,47 +276,40 @@ class HitCritCalculator extends React.Component {
             </tr>
             <tr>
               <td>
-                <div>Hit: {likelihoodHitDnD.value}%</div>
+                <div>
+                  Hit: <strong>{likelihoodHitDnD.value}%</strong>
+                </div>
               </td>
               <td>
                 <div>
-                  Hit: 1st: {likelihoodHitPF.value}%, 2nd:{" "}
-                  {likelihoodHitPF2nd.value}%, 3rd: {likelihoodHitPF3rd.value}%
+                  Hit: 1st: <strong>{likelihoodHitPF.value}%</strong>, 2nd:{" "}
+                  <strong>{likelihoodHitPF2nd.value}%</strong>, 3rd:{" "}
+                  <strong>{likelihoodHitPF3rd.value}%</strong>
                 </div>
               </td>
             </tr>
             <tr>
               <td>
-                <div>Crit: {likelihoodCritDnD.value}%</div>
+                <div>
+                  Crit: <strong>{likelihoodCritDnD.value}%</strong>
+                </div>
               </td>
               <td>
                 <div>
-                  Crit: 1st: {likelihoodCritPF.value}%, 2nd:{" "}
-                  {likelihoodCritPF2nd.value}
-                  %, 3rd: {likelihoodCritPF3rd.value}%
+                  Crit: 1st: <strong>{likelihoodCritPF.value}%</strong>, 2nd:{" "}
+                  <strong>{likelihoodCritPF2nd.value}%</strong>, 3rd:{" "}
+                  <strong>{likelihoodCritPF3rd.value}%</strong>
                 </div>
               </td>
             </tr>
             <tr>
               <td colSpan="2">
                 <div className="formula-div">
-                  <div>
-                    {likelihoodHitDnD.text +
-                      "\n" +
-                      likelihoodCritDnD.text +
-                      "\n1st " +
-                      likelihoodHitPF.text +
-                      "2nd " +
-                      likelihoodHitPF2nd.text +
-                      "3rd " +
-                      likelihoodHitPF3rd.text +
-                      "\n1st " +
-                      likelihoodCritPF.text +
-                      "2nd " +
-                      likelihoodCritPF2nd.text +
-                      "3rd " +
-                      likelihoodCritPF3rd.text}
-                  </div>
+                  <CollapseButton
+                    text={collapseText}
+                    open={collapseOpen}
+                    onButtonClick={this.handleCollapseButtonClick}
+                  />
                 </div>
               </td>
             </tr>

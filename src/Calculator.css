@@ -48,12 +48,16 @@
   left: 60px;
 }
 
-.textarea {
-  resize: none;
-  height: 300px;
-  width: 100%;
-}
-
 .formula-div {
   white-space: pre-wrap;
+  
+  
 }
+
+.collapse-button {
+  max-height: 200px;
+  overflow: auto;
+  padding: 5px;
+}
+
+
