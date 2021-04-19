@@ -415,9 +415,9 @@ function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
         } else {
           result.text =
             result.text +
-            "(11 < " +
+            "(10 < " +
             maxHit +
-            " < 28) -> (" +
+            " < 29) -> (" +
             maxHit +
             " - 9) / 20";
           result.value = (maxHit - 9) / 20;
