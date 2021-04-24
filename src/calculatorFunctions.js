@@ -232,17 +232,59 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
     const countDice =
       Number(weapon.damage.split("d")[0]) + Number(striking ? striking : 0);
     const diceValue = Number(weapon.damage.split("d")[1].split(" ")[0]);
+    const deadlyTrait = weapon.weaponTraits.find((trait) =>
+      trait.trim().startsWith("Deadly")
+    );
+    const fatalTrait = weapon.weaponTraits.find((trait) =>
+      trait.trim().startsWith("Fatal")
+    );
+    const deadlyValue = Number(
+      deadlyTrait ? deadlyTrait.split(" ")[1].substring(1) : 0
+    );
+    const fatalValue = Number(
+      fatalTrait ? fatalTrait.split(" ")[1].substring(1) : 0
+    );
 
-    const strengthNumber = weapons.meleeWeapons.includes(weapon) ? Number(strength ? strength : 0) : 0;
-    const min = countDice + strengthNumber ;
+    const strengthNumber =
+      weapons.meleeWeapons.includes(weapon) ||
+      weapon.weaponTraits.find((trait) => trait.trim() === "Thrown")
+        ? Number(strength ? strength : 0)
+        : weapon.weaponTraits.find((trait) => trait.trim() === "Propulsive")
+        ? Number(strength ? Math.floor(strength / 2) : 0)
+        : 0;
+    const min = countDice + strengthNumber;
     const max = countDice * diceValue + strengthNumber;
     const medium = twoDecimalPlaces(
       Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
     );
 
-    const critMin = min * 2;
-    const critMax = max * 2;
-    const critMedium = medium * 2;
+    const critMin =
+      min * 2 +
+      (deadlyValue ? (striking === "2" ? 2 : striking === "3" ? 3 : 1) : 0) +
+      (fatalValue ? 1 : 0);
+    const critMax =
+      (fatalValue ? countDice * fatalValue + strengthNumber : max) * 2 +
+      (deadlyValue
+        ? striking === "2"
+          ? deadlyValue * 2
+          : striking === "3"
+          ? deadlyValue * 3
+          : 1
+        : 0) +
+      (fatalValue ? fatalValue : 0);
+    const critMedium =
+      (fatalValue
+        ? ((1 + fatalValue) * countDice) / 2 + strengthNumber
+        : medium) *
+        2 +
+      (deadlyValue
+        ? (striking === "2"
+            ? deadlyValue + 1
+            : striking === "3"
+            ? (deadlyValue + 1) / 2
+            : 1) * 3
+        : 0) +
+      (fatalValue ? (fatalValue + 1) / 2 : 0);
     return {
       min: min,
       medium: medium,

@@ -80,14 +80,14 @@ class DamageCalculator extends React.Component {
               </th>
             </tr>
             <tr>
-              <td>Strength: </td>
+              <td>Strength bonus: </td>
               <td>
                 <NumberInput
                   value={strength}
                   onValueChange={this.handleStrengthChange}
                 />
               </td>
-              <td>Dexterity: </td>
+              <td>Dexterity bonus: </td>
               <td>
                 <NumberInput
                   value={dexterity}
@@ -110,7 +110,9 @@ class DamageCalculator extends React.Component {
               <td>
                 <div>
                   <SelectWithOptGroup
-                    optionLabelValue="name"
+                    optionValueAttribute="name"
+                    optionLabelAttribute="name"
+                    optionLabelAdditionAttribute="damage"
                     options={{
                       "Meele Weapons": weaponsPF2.meleeWeapons,
                       "Ranged Weapons": weaponsPF2.rangeWeapons.filter(
@@ -123,11 +125,7 @@ class DamageCalculator extends React.Component {
                     emptyLabel="Select Weapon"
                   />
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
+                <br />
                 <div>
                   Striking Rune:{" "}
                   <DynamicSelect
@@ -141,9 +139,12 @@ class DamageCalculator extends React.Component {
             <tr>
               <td></td>
               <td>
-                {this.state.selectedWeaponPF2
-                  ? this.state.selectedWeaponPF2.damage
-                  : ""}
+                <strong>{weaponResult.min ? weaponResult.min : ""}</strong>
+                {weaponResult.min ? " to " : ""}
+                <strong>
+                  {weaponResult.critMax ? weaponResult.critMax : ""}
+                </strong>
+                {weaponResult.min ? " damage" : ""}
                 <br />
                 <div className="pre-wrap-div">{weaponDamage}</div>
               </td>

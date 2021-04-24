@@ -12,7 +12,9 @@ class SelectWithOptGroup extends Component {
   }
 
   renderOptions(optionGroup) {
-    const { optionLabelValue } = this.props;
+    const { optionLabelAttribute } = this.props;
+    const { optionValueAttribute } = this.props;
+    const { optionLabelAdditionAttribute } = this.props;
     //console.log(optionGroup);
     return (
       optionGroup &&
@@ -22,8 +24,17 @@ class SelectWithOptGroup extends Component {
           option && (
             <option
               key={index}
-              label={optionLabelValue ? option[optionLabelValue] : option}
-              value={optionLabelValue ? option[optionLabelValue] : option}
+              label={
+                optionLabelAttribute
+                  ? option[optionLabelAttribute] +
+                    (optionLabelAdditionAttribute
+                      ? " (" + option[optionLabelAdditionAttribute] + ")"
+                      : "")
+                  : option
+              }
+              value={
+                optionValueAttribute ? option[optionValueAttribute] : option
+              }
             />
           )
         );

@@ -35,7 +35,7 @@ class HitCritCalculator extends React.Component {
   }
 
   handleAcChange(value) {
-    console.log("handleAcChange vaule: " + value)
+    //console.log("handleAcChange vaule: " + value)
     this.setState({ ac: value });
   }
 
