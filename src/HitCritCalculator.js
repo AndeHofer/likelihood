@@ -7,7 +7,7 @@ import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./components/RadioInputGroup";
 import CollapseButton from "./components/CollapseButton";
-import { calculateHitChance, calculateCritChance } from './hitCritCalculatorFunctions'
+import { calculateHitChance, calculateCritChance } from './calculatorFunctions'
 
 class HitCritCalculator extends React.Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class HitCritCalculator extends React.Component {
   }
 
   handleAttackChange(value) {
-    console.log("handleAttackChange vaule: " + value)
+    //console.log("handleAttackChange vaule: " + value)
     this.setState({ attack: value });
   }
 
@@ -307,7 +307,7 @@ class HitCritCalculator extends React.Component {
             </tr>
             <tr>
               <td colSpan="2">
-                <div className="formula-div">
+                <div className="pre-wrap-div">
                   <CollapseButton
                     text={collapseText}
                     open={collapseOpen}

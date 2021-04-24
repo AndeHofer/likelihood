@@ -2,9 +2,11 @@ import React from "react";
 import "./Calculator.css";
 import NumberInput from "./components/NumberInput";
 import DynamicSelect from "./components/DynamicSelect";
-import RadioInputGroup from "./components/RadioInputGroup";
+import SelectWithOptGroup from "./components/SelectWithOptGroup";
 import { weaponsPF2 } from "./data/weaponsPF2";
-import { weaponsDnd5eSrd } from "./data/weaponsDnd5eSrd";
+//import { weaponsDnd5eSrd } from "./data/weaponsDnd5eSrd";
+
+import { calculatePF2WeaponDamage } from "./calculatorFunctions";
 
 class DamageCalculator extends React.Component {
   constructor(props) {
@@ -13,19 +15,17 @@ class DamageCalculator extends React.Component {
       strength: "0",
       dexterity: "0",
       selectedWeaponPF2: "",
-      selectedWeaponPF2Group: "meele",
+      selectedStrikingRune: "0",
     };
 
     this.handleStrengthChange = this.handleStrengthChange.bind(this);
     this.handleDexterityChange = this.handleDexterityChange.bind(this);
     this.handleWeaponsPF2Change = this.handleWeaponsPF2Change.bind(this);
-    this.handleWeaponsPF2GroupChange = this.handleWeaponsPF2GroupChange.bind(
-      this
-    );
+    this.handleStrikingRuneChange = this.handleStrikingRuneChange.bind(this);
   }
 
   handleStrengthChange(value) {
-    console.log("handleStrengthChange value: " + value);
+    //console.log("handleStrengthChange value: " + value);
     this.setState({ strength: value });
   }
 
@@ -35,25 +35,41 @@ class DamageCalculator extends React.Component {
 
   handleWeaponsPF2Change(value) {
     // console.log("handleWeaponsPF2Change weapon: " + value);
-    let selected =
-      this.state.selectedWeaponPF2Group === "meele"
-        ? weaponsPF2.meleeWeapons.find((x) => x.name === value)
-        : weaponsPF2.rangeWeapons.find((x) => x.name === value);
+    let selected = weaponsPF2.meleeWeapons.find((x) => x.name === value);
+    if (!selected) {
+      selected = weaponsPF2.rangeWeapons.find((x) => x.name === value);
+    }
     this.setState({ selectedWeaponPF2: selected });
   }
 
-  handleWeaponsPF2GroupChange(value) {
-    this.setState({ selectedWeaponPF2Group: value });
+  handleStrikingRuneChange(value) {
+    this.setState({ selectedStrikingRune: value });
   }
 
   render() {
     const strength = this.state.strength;
     const dexterity = this.state.dexterity;
-    const selectedWeaponPF2Group = this.state.selectedWeaponPF2Group;
-    const weaponPF2Groups = [
-      { label: "Melee", value: "meele" },
-      { label: "Ranged", value: "ranged" },
-    ];
+    const weaponResult = calculatePF2WeaponDamage(
+      weaponsPF2,
+      this.state.selectedWeaponPF2,
+      this.state.strength,
+      this.state.selectedStrikingRune
+    );
+    const weaponDamage = this.state.selectedWeaponPF2
+      ? "Medium: " +
+        weaponResult.medium +
+        ", Crit: " +
+        weaponResult.critMedium +
+        "\nMin: " +
+        weaponResult.min +
+        ", Crit: " +
+        weaponResult.critMin +
+        "\nMax: " +
+        weaponResult.max +
+        ", Crit: " +
+        weaponResult.critMax
+      : "";
+    const strikingRuneOptions = ["0", "1", "2", "3"];
     return (
       <div className="calculator">
         <table className="calc-input-table">
@@ -92,33 +108,44 @@ class DamageCalculator extends React.Component {
             <tr>
               <td></td>
               <td>
-                <div className="middle-relative">
-                  <RadioInputGroup
-                    radios={weaponPF2Groups}
-                    onValueChange={this.handleWeaponsPF2GroupChange}
-                    name="weaponPF2Group"
-                    selectedValue={selectedWeaponPF2Group}
+                <div>
+                  <SelectWithOptGroup
+                    optionLabelValue="name"
+                    options={{
+                      "Meele Weapons": weaponsPF2.meleeWeapons,
+                      "Ranged Weapons": weaponsPF2.rangeWeapons.filter(
+                        (weapon) =>
+                          weapon.category !== "Ammunition" &&
+                          weapon.name !== "Alchemical Bomb"
+                      ),
+                    }}
+                    onValueChange={this.handleWeaponsPF2Change}
+                    emptyLabel="Select Weapon"
                   />
                 </div>
-                PF Weapons:
-                <DynamicSelect
-                  options={
-                    selectedWeaponPF2Group === "meele"
-                      ? weaponsPF2.meleeWeapons
-                      : weaponsPF2.rangeWeapons.filter(
-                          (weapon) => weapon.category !== "Ammunition"
-                        )
-                  }
-                  onValueChange={this.handleWeaponsPF2Change}
-                />
               </td>
             </tr>
             <tr>
               <td></td>
               <td>
-                {this.state.selectedWeaponPF2.name}
+                <div>
+                  Striking Rune:{" "}
+                  <DynamicSelect
+                    options={strikingRuneOptions}
+                    onValueChange={this.handleStrikingRuneChange}
+                    doNotRenderEmpty={true}
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                {this.state.selectedWeaponPF2
+                  ? this.state.selectedWeaponPF2.damage
+                  : ""}
                 <br />
-                {this.state.selectedWeaponPF2.damage}
+                <div className="pre-wrap-div">{weaponDamage}</div>
               </td>
             </tr>
           </tbody>

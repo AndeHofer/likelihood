@@ -13,25 +13,33 @@ class DynamicSelect extends Component {
 
   renderOptions() {
     const { options } = this.props;
+    const { optionLabelValue } = this.props;
     return (
       options &&
       options.length > 0 &&
       options.map((option, index) => {
         return (
-          option && <option key={index} label={option.name} value={option.name} />
+          option && (
+            <option
+              key={index}
+              label={optionLabelValue ? option[optionLabelValue] : option}
+              value={optionLabelValue ? option[optionLabelValue] : option}
+            />
+          )
         );
       })
     );
   }
 
   render() {
+    const { doNotRenderEmpty } = this.props;
     return (
-      <div>
-        <select onChange={(e) => this.handleChange(e)}>
-          <option value="0" key="0" label="" />
+      <>
+        <select onChange={(e) => this.handleChange(e)} >
+          {!doNotRenderEmpty && <option value="" key="0" label="" />}
           {this.renderOptions()}
         </select>
-      </div>
+      </>
     );
   }
 }

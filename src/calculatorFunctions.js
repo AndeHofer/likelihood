@@ -133,6 +133,10 @@ function fourDecimalPlaces(number) {
   return Math.round(number * 10000) / 10000;
 }
 
+function twoDecimalPlaces(number) {
+  return Math.round(number * 100) / 100;
+}
+
 function calculateAdvHit(adv, sys, result, overZero) {
   if (sys === "DnD 5e") {
     if (adv === "Advantage") {
@@ -221,4 +225,32 @@ function calculateHluckHit(hluck, sys, result, overZero, adv) {
     }
   }
   return result;
+}
+
+export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
+  if (weapon) {
+    const countDice =
+      Number(weapon.damage.split("d")[0]) + Number(striking ? striking : 0);
+    const diceValue = Number(weapon.damage.split("d")[1].split(" ")[0]);
+
+    const strengthNumber = weapons.meleeWeapons.includes(weapon) ? Number(strength ? strength : 0) : 0;
+    const min = countDice + strengthNumber ;
+    const max = countDice * diceValue + strengthNumber;
+    const medium = twoDecimalPlaces(
+      Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
+    );
+
+    const critMin = min * 2;
+    const critMax = max * 2;
+    const critMedium = medium * 2;
+    return {
+      min: min,
+      medium: medium,
+      max: max,
+      critMin: critMin,
+      critMax: critMax,
+      critMedium: critMedium,
+    };
+  }
+  return "";
 }

@@ -7,7 +7,7 @@ class NumberInput extends React.Component {
     }
   
     handleChange(e) {
-      console.log("e.target.value: " + e.target.value);
+      //console.log("e.target.value: " + e.target.value);
       this.props.onValueChange(e.target.value);
     }
   
