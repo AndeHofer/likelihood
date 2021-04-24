@@ -1,12 +1,13 @@
 import React from "react";
 
-class ValueInput extends React.Component {
+class NumberInput extends React.Component {
     constructor(props) {
       super(props);
       this.handleChange = this.handleChange.bind(this);
     }
   
     handleChange(e) {
+      console.log("e.target.value: " + e.target.value);
       this.props.onValueChange(e.target.value);
     }
   
@@ -26,4 +27,4 @@ class ValueInput extends React.Component {
     }
   }
 
-  export default ValueInput;
+  export default NumberInput;

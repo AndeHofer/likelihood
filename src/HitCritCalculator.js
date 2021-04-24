@@ -1,8 +1,8 @@
 import React from "react";
 import "./Calculator.css";
 import { dnd5Monsters } from "./data/monsterDnd5eSrd";
-import DynamicSelect from "./components/DynamicSelect";
-import ValueInput from "./components/NumberInput";
+import DynamicSelectNumberValue from "./components/DynamicSelectNumberValue";
+import NumberInput from "./components/NumberInput";
 import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./components/RadioInputGroup";
@@ -35,10 +35,12 @@ class HitCritCalculator extends React.Component {
   }
 
   handleAcChange(value) {
+    console.log("handleAcChange vaule: " + value)
     this.setState({ ac: value });
   }
 
   handleAttackChange(value) {
+    console.log("handleAttackChange vaule: " + value)
     this.setState({ attack: value });
   }
 
@@ -189,33 +191,33 @@ class HitCritCalculator extends React.Component {
             <tr>
               <td>Attack: </td>
               <td>
-                <ValueInput
+                <NumberInput
                   value={attack}
                   onValueChange={this.handleAttackChange}
                 />
               </td>
               <td>Armor Class: </td>
               <td>
-                <ValueInput value={ac} onValueChange={this.handleAcChange} />
+                <NumberInput value={ac} onValueChange={this.handleAcChange} />
               </td>
             </tr>
             <tr>
               <td>Dnd Monster:</td>
               <td colSpan="3">
-                <DynamicSelect
+                <DynamicSelectNumberValue
                   options={dnd5Monsters}
                   onValueChange={this.handleMonsterChange}
-                  acName="Armor Class"
+                  valueName="Armor Class"
                 />
               </td>
             </tr>
             <tr>
               <td>PF Monster:</td>
               <td colSpan="3">
-                <DynamicSelect
+                <DynamicSelectNumberValue
                   options={pf2Monsters}
                   onValueChange={this.handleMonsterChange}
-                  acName="AC"
+                  valueName="AC"
                 />
               </td>
             </tr>

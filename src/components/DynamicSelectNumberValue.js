@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class DynamicSelect extends Component {
+class DynamicSelectNumberValue extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -8,17 +8,25 @@ class DynamicSelect extends Component {
 
   handleChange(event) {
     this.props.onValueChange(event.target.value);
-    //console.log("Dynamic Select handleChange: " + event.target.value);
+    //console.log(event.target.value);
   }
 
   renderOptions() {
     const { options } = this.props;
+    const { valueName } = this.props;
     return (
       options &&
       options.length > 0 &&
       options.map((option, index) => {
         return (
-          option && <option key={index} label={option.name} value={option.name} />
+          option &&
+          option[valueName] && (
+            <option
+              key={index}
+              label={option.name + " (" + parseInt(option[valueName]) + ")"}
+              value={parseInt(option[valueName])}
+            />
+          )
         );
       })
     );
@@ -27,7 +35,7 @@ class DynamicSelect extends Component {
   render() {
     return (
       <div>
-        <select onChange={(e) => this.handleChange(e)}>
+        <select onChange={this.handleChange}>
           <option value="0" key="0" label="" />
           {this.renderOptions()}
         </select>
@@ -36,4 +44,4 @@ class DynamicSelect extends Component {
   }
 }
 
-export default DynamicSelect;
+export default DynamicSelectNumberValue;
