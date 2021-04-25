@@ -22,8 +22,8 @@ class DynamicSelect extends Component {
           option && (
             <option
               key={index}
-              label={optionLabelValue ? option[optionLabelValue] : option}
-              value={optionLabelValue ? option[optionLabelValue] : option}
+              label={optionLabelValue ? option[optionLabelValue] : option.label ? option.label : option}
+              value={optionLabelValue ? option[optionLabelValue] : option.value ? option.value : option}
             />
           )
         );

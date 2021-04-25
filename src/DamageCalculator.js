@@ -56,20 +56,25 @@ class DamageCalculator extends React.Component {
       this.state.selectedStrikingRune
     );
     const weaponDamage = this.state.selectedWeaponPF2
-      ? "Medium: " +
-        weaponResult.medium +
-        ", Crit: " +
-        weaponResult.critMedium +
-        "\nMin: " +
+      ? "Min: " +
         weaponResult.min +
         ", Crit: " +
         weaponResult.critMin +
+        "\nMedium: " +
+        weaponResult.medium +
+        ", Crit: " +
+        weaponResult.critMedium +
         "\nMax: " +
         weaponResult.max +
         ", Crit: " +
         weaponResult.critMax
       : "";
-    const strikingRuneOptions = ["0", "1", "2", "3"];
+    const strikingRuneOptions = [
+      { value: "0", label: "No" },
+      { value: "1", label: "Normal" },
+      { value: "2", label: "Greater" },
+      { value: "3", label: "Major" },
+    ];
     return (
       <div className="calculator">
         <table className="calc-input-table">
@@ -127,12 +132,12 @@ class DamageCalculator extends React.Component {
                 </div>
                 <br />
                 <div>
-                  Striking Rune:{" "}
                   <DynamicSelect
                     options={strikingRuneOptions}
                     onValueChange={this.handleStrikingRuneChange}
                     doNotRenderEmpty={true}
                   />
+                  {" "}Striking Rune
                 </div>
               </td>
             </tr>
@@ -149,6 +154,7 @@ class DamageCalculator extends React.Component {
                 <div className="pre-wrap-div">{weaponDamage}</div>
               </td>
             </tr>
+            <tr><td></td><td>TODO: crit specialization and bonus dices for rogues</td></tr>
           </tbody>
         </table>
       </div>

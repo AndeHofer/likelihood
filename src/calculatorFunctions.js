@@ -239,10 +239,10 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
       trait.trim().startsWith("Fatal")
     );
     const deadlyValue = Number(
-      deadlyTrait ? deadlyTrait.split(" ")[1].substring(1) : 0
+      deadlyTrait ? deadlyTrait.trim().split(" ")[1].substring(1) : 0
     );
     const fatalValue = Number(
-      fatalTrait ? fatalTrait.split(" ")[1].substring(1) : 0
+      fatalTrait ? fatalTrait.trim().split(" ")[1].substring(1) : 0
     );
 
     const strengthNumber =
@@ -269,7 +269,7 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
           ? deadlyValue * 2
           : striking === "3"
           ? deadlyValue * 3
-          : 1
+          : deadlyValue
         : 0) +
       (fatalValue ? fatalValue : 0);
     const critMedium =
@@ -278,11 +278,11 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
         : medium) *
         2 +
       (deadlyValue
-        ? (striking === "2"
-            ? deadlyValue + 1
-            : striking === "3"
-            ? (deadlyValue + 1) / 2
-            : 1) * 3
+        ? striking === "2"
+          ? deadlyValue + 1
+          : striking === "3"
+          ? ((deadlyValue + 1) / 2) * 3
+          : (deadlyValue + 1) / 2
         : 0) +
       (fatalValue ? (fatalValue + 1) / 2 : 0);
     return {
