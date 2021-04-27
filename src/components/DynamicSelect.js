@@ -22,8 +22,20 @@ class DynamicSelect extends Component {
           option && (
             <option
               key={index}
-              label={optionLabelValue ? option[optionLabelValue] : option.label ? option.label : option}
-              value={optionLabelValue ? option[optionLabelValue] : option.value ? option.value : option}
+              label={
+                optionLabelValue
+                  ? option[optionLabelValue]
+                  : option.label
+                  ? option.label
+                  : option
+              }
+              value={
+                optionLabelValue
+                  ? option[optionLabelValue]
+                  : option.value
+                  ? option.value
+                  : option
+              }
             />
           )
         );
@@ -33,9 +45,13 @@ class DynamicSelect extends Component {
 
   render() {
     const { doNotRenderEmpty } = this.props;
+    const { selectClassName } = this.props;
     return (
       <>
-        <select onChange={(e) => this.handleChange(e)} >
+        <select
+          onChange={(e) => this.handleChange(e)}
+          className={selectClassName}
+        >
           {!doNotRenderEmpty && <option value="" key="0" label="" />}
           {this.renderOptions()}
         </select>

@@ -5,8 +5,10 @@ import DynamicSelect from "./components/DynamicSelect";
 import SelectWithOptGroup from "./components/SelectWithOptGroup";
 import { weaponsPF2 } from "./data/weaponsPF2";
 //import { weaponsDnd5eSrd } from "./data/weaponsDnd5eSrd";
-
 import { calculatePF2WeaponDamage } from "./calculatorFunctions";
+import CheckboxInput from "./components/CheckboxInput";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 class DamageCalculator extends React.Component {
   constructor(props) {
@@ -16,12 +18,16 @@ class DamageCalculator extends React.Component {
       dexterity: "0",
       selectedWeaponPF2: "",
       selectedStrikingRune: "0",
+      selectedPotencyRune: "0",
+      criticalSpecialization: false,
     };
 
     this.handleStrengthChange = this.handleStrengthChange.bind(this);
     this.handleDexterityChange = this.handleDexterityChange.bind(this);
     this.handleWeaponsPF2Change = this.handleWeaponsPF2Change.bind(this);
     this.handleStrikingRuneChange = this.handleStrikingRuneChange.bind(this);
+    this.handleCritSpecChange = this.handleCritSpecChange.bind(this);
+    this.handlePotencyRuneChange = this.handlePotencyRuneChange.bind(this);
   }
 
   handleStrengthChange(value) {
@@ -46,6 +52,16 @@ class DamageCalculator extends React.Component {
     this.setState({ selectedStrikingRune: value });
   }
 
+  handleCritSpecChange(value) {
+    this.setState({
+      criticalSpecialization: !this.state.criticalSpecialization,
+    });
+  }
+
+  handlePotencyRuneChange(value) {
+    this.setState({ selectedPotencyRune: value });
+  }
+
   render() {
     const strength = this.state.strength;
     const dexterity = this.state.dexterity;
@@ -53,21 +69,26 @@ class DamageCalculator extends React.Component {
       weaponsPF2,
       this.state.selectedWeaponPF2,
       this.state.strength,
-      this.state.selectedStrikingRune
+      this.state.selectedStrikingRune,
+      this.state.criticalSpecialization,
+      this.state.selectedPotencyRune
     );
     const weaponDamage = this.state.selectedWeaponPF2
       ? "Min: " +
         weaponResult.min +
-        ", Crit: " +
+        "\n Min Crit: " +
         weaponResult.critMin +
-        "\nMedium: " +
+        weaponResult.critSpecMin +
+        "\nMed: " +
         weaponResult.medium +
-        ", Crit: " +
+        "\n Med Crit: " +
         weaponResult.critMedium +
+        weaponResult.critSpecMed +
         "\nMax: " +
         weaponResult.max +
-        ", Crit: " +
-        weaponResult.critMax
+        "\n Max Crit: " +
+        weaponResult.critMax +
+        weaponResult.critSpecMax
       : "";
     const strikingRuneOptions = [
       { value: "0", label: "No" },
@@ -75,6 +96,26 @@ class DamageCalculator extends React.Component {
       { value: "2", label: "Greater" },
       { value: "3", label: "Major" },
     ];
+
+    const potencyRuneOptions = [
+      { value: "0", label: "No" },
+      { value: "1", label: "+ 1" },
+      { value: "2", label: "+ 2" },
+      { value: "3", label: "+ 3" },
+    ];
+    const criticalSpecialization = this.state.criticalSpecialization;
+    const renderCritSpecTooltip = (props) => (
+      <Tooltip id="critspec-tooltip" {...props}>
+        {this.state.selectedWeaponPF2 &&
+        weaponsPF2.critSpecialization.find(
+          (critspec) => critspec.name === this.state.selectedWeaponPF2.group
+        )
+          ? weaponsPF2.critSpecialization.find(
+              (critspec) => critspec.name === this.state.selectedWeaponPF2.group
+            ).text
+          : null}
+      </Tooltip>
+    );
     return (
       <div className="calculator">
         <table className="calc-input-table">
@@ -136,8 +177,36 @@ class DamageCalculator extends React.Component {
                     options={strikingRuneOptions}
                     onValueChange={this.handleStrikingRuneChange}
                     doNotRenderEmpty={true}
-                  />
-                  {" "}Striking Rune
+                    selectClassName="select-runes"
+                  />{" "}
+                  Striking Rune
+                </div>
+                <div>
+                  <DynamicSelect
+                    options={potencyRuneOptions}
+                    onValueChange={this.handlePotencyRuneChange}
+                    doNotRenderEmpty={true}
+                    selectClassName="select-runes"
+                  />{" "}
+                  Potency Rune
+                </div>
+                <div>
+                  <CheckboxInput
+                    onValueChange={this.handleCritSpecChange}
+                    value={criticalSpecialization}
+                  />{" "}
+                  Critical Specialization{" "}
+                  <OverlayTrigger
+                    //placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderCritSpecTooltip}
+                  >
+                    <span>
+                      {this.state.selectedWeaponPF2
+                        ? "(" + this.state.selectedWeaponPF2.group + ")"
+                        : ""}
+                    </span>
+                  </OverlayTrigger>
                 </div>
               </td>
             </tr>
@@ -149,12 +218,22 @@ class DamageCalculator extends React.Component {
                 <strong>
                   {weaponResult.critMax ? weaponResult.critMax : ""}
                 </strong>
-                {weaponResult.min ? " damage" : ""}
+                {weaponResult.min ? " damage " : ""}
+                {weaponResult.critSpecMax ? weaponResult.critSpecMax : ""}
+
                 <br />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
                 <div className="pre-wrap-div">{weaponDamage}</div>
               </td>
             </tr>
-            <tr><td></td><td>TODO: crit specialization and bonus dices for rogues</td></tr>
+            <tr>
+              <td></td>
+              <td>TODO: bonus dices for rogues</td>
+            </tr>
           </tbody>
         </table>
       </div>

@@ -227,8 +227,19 @@ function calculateHluckHit(hluck, sys, result, overZero, adv) {
   return result;
 }
 
-export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
+export function calculatePF2WeaponDamage(
+  weapons,
+  weapon,
+  strength,
+  striking,
+  critSpecBoolean,
+  potency
+) {
   if (weapon) {
+    let critSpecMin = "";
+    let critSpecMed = "";
+    let critSpecMax = "";
+
     const countDice =
       Number(weapon.damage.split("d")[0]) + Number(striking ? striking : 0);
     const diceValue = Number(weapon.damage.split("d")[1].split(" ")[0]);
@@ -262,6 +273,7 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
       min * 2 +
       (deadlyValue ? (striking === "2" ? 2 : striking === "3" ? 3 : 1) : 0) +
       (fatalValue ? 1 : 0);
+
     const critMax =
       (fatalValue ? countDice * fatalValue + strengthNumber : max) * 2 +
       (deadlyValue
@@ -272,6 +284,7 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
           : deadlyValue
         : 0) +
       (fatalValue ? fatalValue : 0);
+
     const critMedium =
       (fatalValue
         ? ((1 + fatalValue) * countDice) / 2 + strengthNumber
@@ -285,6 +298,94 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
           : (deadlyValue + 1) / 2
         : 0) +
       (fatalValue ? (fatalValue + 1) / 2 : 0);
+
+    if (critSpecBoolean) {
+      switch (weapon.group) {
+        case "Axe":
+          critSpecMin = " + possible " + countDice + " to adjacent";
+          critSpecMed =
+            " + possible " +
+            twoDecimalPlaces(Number(((1 + diceValue) * countDice) / 2)) +
+            " to adjacent";
+          critSpecMax = " + possible " + countDice * diceValue + " to adjacent";
+          break;
+
+        case "Bow":
+          critSpecMin = " + possible stuck to surface (DC 10 Athletic)";
+          critSpecMed = " + possible stuck to surface (DC 10 Athletic)";
+          critSpecMax = " + possible stuck to surface (DC 10 Athletic)";
+          break;
+
+        case "Brawling":
+          critSpecMin =
+            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+          critSpecMed =
+            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+          critSpecMax =
+            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+          break;
+
+        case "Club":
+          critSpecMin = " + knocked away (up to 10 feet)";
+          critSpecMed = " + knocked away (up to 10 feet)";
+          critSpecMax = " + knocked away (up to 10 feet)";
+          break;
+
+        case "Pick":
+          critSpecMin = " + " + countDice * 2 + " P";
+          critSpecMed = " + " + countDice * 2 + " P";
+          critSpecMax = " + " + countDice * 2 + " P";
+          break;
+
+        case "Polearm":
+          critSpecMin = " + moved 5 feet away (direction your choice)";
+          critSpecMed = " + moved 5 feet away (direction your choice)";
+          critSpecMax = " + moved 5 feet away (direction your choice)";
+          break;
+
+        case "Shield":
+          critSpecMin = " + knocked 5 feet away";
+          critSpecMed = " + knocked 5 feet away";
+          critSpecMax = " + knocked 5 feet away";
+          break;
+
+        case "Sling":
+          critSpecMin = " + Fortitude save to class DC -> stunned 1";
+          critSpecMed = " + Fortitude save to class DC -> stunned 1";
+          critSpecMax = " + Fortitude save to class DC -> stunned 1";
+          break;
+
+        case "Spear":
+          critSpecMin = " + clumsy 1 until start of your next round";
+          critSpecMed = " + clumsy 1 until start of your next round";
+          critSpecMax = " + clumsy 1 until start of your next round";
+          break;
+
+        case "Sword":
+          critSpecMin = " + flat-footed until start of your next round";
+          critSpecMed = " + flat-footed until start of your next round";
+          critSpecMax = " + flat-footed until start of your next round";
+          break;
+
+        case "Hammer":
+        case "Flail":
+          critSpecMin = " + knocked prone";
+          critSpecMed = " + knocked prone";
+          critSpecMax = " + knocked prone";
+          break;
+
+        case "Dart":
+        case "Knife":
+          critSpecMin = " + " + (1 + Number(potency)) + " bleeding";
+          critSpecMed = " + " + (3.5 + Number(potency)) + " bleeding";
+          critSpecMax = " + " + (6 + Number(potency)) + " bleeding";
+          break;
+        default:
+          // do nothing
+          break;
+      }
+    }
+
     return {
       min: min,
       medium: medium,
@@ -292,6 +393,9 @@ export function calculatePF2WeaponDamage(weapons, weapon, strength, striking) {
       critMin: critMin,
       critMax: critMax,
       critMedium: critMedium,
+      critSpecMin: critSpecMin,
+      critSpecMax: critSpecMax,
+      critSpecMed: critSpecMed,
     };
   }
   return "";
