@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/likelihood/static/css/main.c8d9093e.chunk.css",
-    "main.js": "/likelihood/static/js/main.0d4fa475.chunk.js",
-    "main.js.map": "/likelihood/static/js/main.0d4fa475.chunk.js.map",
+    "main.js": "/likelihood/static/js/main.2f6035f5.chunk.js",
+    "main.js.map": "/likelihood/static/js/main.2f6035f5.chunk.js.map",
     "runtime-main.js": "/likelihood/static/js/runtime-main.493caba6.js",
     "runtime-main.js.map": "/likelihood/static/js/runtime-main.493caba6.js.map",
     "static/css/2.ef9168ec.chunk.css": "/likelihood/static/css/2.ef9168ec.chunk.css",
@@ -18,6 +18,6 @@
     "static/css/2.ef9168ec.chunk.css",
     "static/js/2.8c3267f5.chunk.js",
     "static/css/main.c8d9093e.chunk.css",
-    "static/js/main.0d4fa475.chunk.js"
+    "static/js/main.2f6035f5.chunk.js"
   ]
 }
