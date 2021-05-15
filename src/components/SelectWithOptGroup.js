@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {objectByString} from "./../helperFunctions";
 
 class SelectWithOptGroup extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class SelectWithOptGroup extends Component {
                 optionLabelAttribute
                   ? option[optionLabelAttribute] +
                     (optionLabelAdditionAttribute
-                      ? " (" + option[optionLabelAdditionAttribute] + ")"
+                      ? " (" + objectByString(option, optionLabelAdditionAttribute) + ")"
                       : "")
                   : option
               }
@@ -75,5 +76,7 @@ class SelectWithOptGroup extends Component {
     );
   }
 }
+
+
 
 export default SelectWithOptGroup;

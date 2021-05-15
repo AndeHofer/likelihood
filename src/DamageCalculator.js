@@ -4,7 +4,7 @@ import NumberInput from "./components/NumberInput";
 import DynamicSelect from "./components/DynamicSelect";
 import SelectWithOptGroup from "./components/SelectWithOptGroup";
 import { weaponsPF2 } from "./data/weaponsPF2";
-//import { weaponsDnd5eSrd } from "./data/weaponsDnd5eSrd";
+import { weaponsDnd5Srd } from "./data/weaponsDnd5eSrd";
 import { calculatePF2WeaponDamage } from "./calculatorFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -17,6 +17,7 @@ class DamageCalculator extends React.Component {
       strength: "0",
       dexterity: "0",
       selectedWeaponPF2: "",
+      selectedWeaponDnd5: "",
       selectedStrikingRune: "0",
       selectedPotencyRune: "0",
       criticalSpecialization: false,
@@ -28,6 +29,7 @@ class DamageCalculator extends React.Component {
     this.handleStrikingRuneChange = this.handleStrikingRuneChange.bind(this);
     this.handleCritSpecChange = this.handleCritSpecChange.bind(this);
     this.handlePotencyRuneChange = this.handlePotencyRuneChange.bind(this);
+    this.handleWeaponsDnd5Change = this.handleWeaponsDnd5Change.bind(this);
   }
 
   handleStrengthChange(value) {
@@ -60,6 +62,10 @@ class DamageCalculator extends React.Component {
 
   handlePotencyRuneChange(value) {
     this.setState({ selectedPotencyRune: value });
+  }
+
+  handleWeaponsDnd5Change(value) {
+    this.setState({ selectedWeaponDnd5: value });
   }
 
   render() {
@@ -152,7 +158,26 @@ class DamageCalculator extends React.Component {
               <th>Pathfinder 2e</th>
             </tr>
             <tr>
-              <td></td>
+              <td>
+                {" "}
+                <div>
+                  <SelectWithOptGroup
+                    optionValueAttribute="index"
+                    optionLabelAttribute="name"
+                    optionLabelAdditionAttribute="damage.damage_dice"
+                    options={{
+                      "Melee Weapons": weaponsDnd5Srd.filter(
+                        (weapon) => weapon.weapon_range === "Melee"
+                      ),
+                      "Ranged Weapons": weaponsDnd5Srd.filter(
+                        (weapon) => weapon.weapon_range === "Ranged"
+                      ),
+                    }}
+                    onValueChange={this.handleWeaponsDnd5Change}
+                    emptyLabel="Select Weapon"
+                  />
+                </div>
+              </td>
               <td>
                 <div>
                   <SelectWithOptGroup
@@ -160,7 +185,7 @@ class DamageCalculator extends React.Component {
                     optionLabelAttribute="name"
                     optionLabelAdditionAttribute="damage"
                     options={{
-                      "Meele Weapons": weaponsPF2.meleeWeapons,
+                      "Melee Weapons": weaponsPF2.meleeWeapons,
                       "Ranged Weapons": weaponsPF2.rangeWeapons.filter(
                         (weapon) =>
                           weapon.category !== "Ammunition" &&

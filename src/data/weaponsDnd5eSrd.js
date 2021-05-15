@@ -1,218 +1,930 @@
-export const weaponsDnd5 = {
-  "Weapons List": {
-    "Simple Melee Weapons": {
-      table: {
-        Name: [
-          "Club",
-          "Dagger",
-          "Greatclub",
-          "Handaxe",
-          "Javelin",
-          "Light hammer",
-          "Mace",
-          "Quarterstaff",
-          "Sickle",
-          "Spear",
-        ],
-        Cost: [
-          "1 sp",
-          "2 gp",
-          "2 sp",
-          "5 gp",
-          "5 sp",
-          "2 gp",
-          "5 gp",
-          "2 sp",
-          "1 gp",
-          "1 gp",
-        ],
-        Damage: [
-          "1d4 bludgeoning",
-          "1d4 piercing",
-          "1d8 bludgeoning",
-          "1d6 slashing",
-          "1d6 piercing",
-          "1d4 bludgeoning",
-          "1d6 bludgeoning",
-          "1d6 bludgeoning",
-          "1d4 slashing",
-          "1d6 piercing",
-        ],
-        Weight: [
-          "2 lb.",
-          "1 lb.",
-          "10 lb.",
-          "2 lb.",
-          "2 lb.",
-          "2 lb.",
-          "4 lb.",
-          "4 lb.",
-          "2 lb.",
-          "3 lb.",
-        ],
-        Properties: [
-          "Light",
-          "Finesse, light, thrown (range 20/60)",
-          "Two-handed",
-          "Light, thrown (range 20/60)",
-          "Thrown (range 30/120)",
-          "Light, thrown (range 20/60)",
-          "—",
-          "Versatile (1d8)",
-          "Light",
-          "Thrown (range 20/60), versatile (1d8)",
-        ],
+/*https://www.dnd5eapi.co/graphql
+{
+  equipments(filter: { equipment_category: { index: "weapon" } }) {
+    index
+    name
+    damage {
+      damage_dice
+      damage_type {
+        index
+      }
+    }
+    properties {
+      index
+    }
+    weapon_category
+    weapon_range
+    range {
+      normal
+      long
+    }
+    two_handed_damage {
+      damage_dice
+      damage_type {
+        index
+      }
+    }
+  }
+}*/
+export const weaponsDnd5Srd = [
+  {
+    index: "crossbow-hand",
+    name: "Crossbow, hand",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "piercing",
       },
     },
-    "Simple Ranged Weapons": {
-      table: {
-        Name: ["Crossbow, light", "Dart", "Shortbow", "Sling"],
-        Cost: ["25 gp", "5 cp", "25 gp", "1 sp"],
-        Damage: [
-          "1d8 piercing",
-          "1d4 piercing",
-          "1d6 piercing",
-          "1d4 bludgeoning",
-        ],
-        Weight: ["5 lb.", "1/4 lb.", "2 lb.", "—"],
-        Properties: [
-          "Ammunition (range 80/320), loading, two-handed",
-          "Finesse, thrown (range 20/60)",
-          "Ammunition (range 80/320), two-handed",
-          "Ammunition (range 30/120)",
-        ],
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "light",
+      },
+      {
+        index: "loading",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Ranged",
+    range: {
+      normal: 30,
+      long: 120,
+    },
+  },
+  {
+    index: "whip",
+    name: "Whip",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "slashing",
       },
     },
-    "Martial Melee Weapons": {
-      table: {
-        Name: [
-          "Battleaxe",
-          "Flail",
-          "Glaive",
-          "Greataxe",
-          "Greatsword",
-          "Halberd",
-          "Lance",
-          "Longsword",
-          "Maul",
-          "Morningstar",
-          "Pike",
-          "Rapier",
-          "Scimitar",
-          "Shortsword",
-          "Trident",
-          "War pick",
-          "Warhammer",
-          "Whip",
-        ],
-        Cost: [
-          "10 gp",
-          "10 gp",
-          "20 gp",
-          "30 gp",
-          "50 gp",
-          "20 gp",
-          "10 gp",
-          "15 gp",
-          "10 gp",
-          "15 gp",
-          "5 gp",
-          "25 gp",
-          "25 gp",
-          "10 gp",
-          "5 gp",
-          "5 gp",
-          "15 gp",
-          "2 gp",
-        ],
-        Damage: [
-          "1d8 slashing",
-          "1d8 bludgeoning",
-          "1d10 slashing",
-          "1d12 slashing",
-          "2d6 slashing",
-          "1d10 slashing",
-          "1d12 piercing",
-          "1d8 slashing",
-          "2d6 bludgeoning",
-          "1d8 piercing",
-          "1d10 piercing",
-          "1d8 piercing",
-          "1d6 slashing",
-          "1d6 piercing",
-          "1d6 piercing",
-          "1d8 piercing",
-          "1d8 bludgeoning",
-          "1d4 slashing",
-        ],
-        Weight: [
-          "4 lb.",
-          "2 lb.",
-          "6 lb.",
-          "7 lb.",
-          "6 lb.",
-          "6 lb.",
-          "6 lb.",
-          "3 lb.",
-          "10 lb.",
-          "4 lb.",
-          "18 lb.",
-          "2 lb.",
-          "3 lb.",
-          "2 lb.",
-          "4 lb.",
-          "2 lb.",
-          "2 lb.",
-          "3 lb.",
-        ],
-        Properties: [
-          "Versatile (1d10)",
-          "—",
-          "Heavy, reach, two-handed",
-          "Heavy, two-handed",
-          "Heavy, two-handed",
-          "Heavy, reach, two-handed",
-          "Reach, special",
-          "Versatile (1d10)",
-          "Heavy, two-handed",
-          "—",
-          "Heavy, reach, two-handed",
-          "Finesse",
-          "Finesse, light",
-          "Finesse, light",
-          "Thrown (range 20/60), versatile (1d8)",
-          "—",
-          "Versatile (1d10)",
-          "Finesse, reach",
-        ],
+    properties: [
+      {
+        index: "finesse",
+      },
+      {
+        index: "reach",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "blowgun",
+    name: "Blowgun",
+    damage: {
+      damage_dice: "1d1",
+      damage_type: {
+        index: "piercing",
       },
     },
-    "Martial Ranged Weapons": {
-      table: {
-        Name: [
-          "Blowgun",
-          "Crossbow, hand",
-          "Crossbow, heavy",
-          "Longbow",
-          "Net",
-        ],
-        Cost: ["10 gp", "75 gp", "50 gp", "50 gp", "1 gp"],
-        Damage: [
-          "1 piercing",
-          "1d6 piercing",
-          "1d10 piercing",
-          "1d8 piercing",
-          "—",
-        ],
-        Weight: ["1 lb.", "3 lb.", "18 lb.", "2 lb.", "3 lb."],
-        Properties: [
-          "Ammunition (range 25/100), loading",
-          "Ammunition (range 30/120), light, loading",
-          "Ammunition (range 100/400), heavy, loading, two-handed",
-          "Ammunition (range 150/600), heavy, two-handed",
-          "Special, thrown (range 5/15)",
-        ],
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "loading",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Ranged",
+    range: {
+      normal: 25,
+      long: 100,
+    },
+  },
+  {
+    index: "crossbow-heavy",
+    name: "Crossbow, heavy",
+    damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "light",
+      },
+      {
+        index: "loading",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Ranged",
+    range: {
+      normal: 100,
+      long: 400,
+    },
+  },
+  {
+    index: "club",
+    name: "Club",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "light",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "handaxe",
+    name: "Handaxe",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "light",
+      },
+      {
+        index: "thrown",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "spear",
+    name: "Spear",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "thrown",
+      },
+      {
+        index: "versatile",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
       },
     },
   },
-};
+  {
+    index: "quarterstaff",
+    name: "Quarterstaff",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "versatile",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+  },
+  {
+    index: "halberd",
+    name: "Halberd",
+    damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "reach",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "rapier",
+    name: "Rapier",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "finesse",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "shortsword",
+    name: "Shortsword",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "finesse",
+      },
+      {
+        index: "light",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "warhammer",
+    name: "Warhammer",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "versatile",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+  },
+  {
+    index: "longsword",
+    name: "Longsword",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "versatile",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+  },
+  {
+    index: "mace",
+    name: "Mace",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "shortbow",
+    name: "Shortbow",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Ranged",
+    range: {
+      normal: 80,
+      long: 320,
+    },
+  },
+  {
+    index: "trident",
+    name: "Trident",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "thrown",
+      },
+      {
+        index: "versatile",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+  },
+  {
+    index: "dagger",
+    name: "Dagger",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "finesse",
+      },
+      {
+        index: "light",
+      },
+      {
+        index: "thrown",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "light-hammer",
+    name: "Light hammer",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "light",
+      },
+      {
+        index: "thrown",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "sickle",
+    name: "Sickle",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "light",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "battleaxe",
+    name: "Battleaxe",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "versatile",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+    two_handed_damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+  },
+  {
+    index: "sling",
+    name: "Sling",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "ammunition",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Ranged",
+    range: {
+      normal: 30,
+      long: 120,
+    },
+  },
+  {
+    index: "maul",
+    name: "Maul",
+    damage: {
+      damage_dice: "2d6",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "dart",
+    name: "Dart",
+    damage: {
+      damage_dice: "1d4",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "finesse",
+      },
+      {
+        index: "thrown",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Ranged",
+    range: {
+      normal: 20,
+      long: 60,
+    },
+  },
+  {
+    index: "greataxe",
+    name: "Greataxe",
+    damage: {
+      damage_dice: "1d12",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "greatsword",
+    name: "Greatsword",
+    damage: {
+      damage_dice: "2d6",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "pike",
+    name: "Pike",
+    damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "reach",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "greatclub",
+    name: "Greatclub",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "glaive",
+    name: "Glaive",
+    damage: {
+      damage_dice: "1d10",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "heavy",
+      },
+      {
+        index: "reach",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "flail",
+    name: "Flail",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "bludgeoning",
+      },
+    },
+    properties: [],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "javelin",
+    name: "Javelin",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "thrown",
+      },
+      {
+        index: "monk",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "crossbow-light",
+    name: "Crossbow, light",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "loading",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Simple",
+    weapon_range: "Ranged",
+    range: {
+      normal: 80,
+      long: 320,
+    },
+  },
+  {
+    index: "war-pick",
+    name: "War pick",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "longbow",
+    name: "Longbow",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "ammunition",
+      },
+      {
+        index: "heavy",
+      },
+      {
+        index: "two-handed",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Ranged",
+    range: {
+      normal: 150,
+      long: 600,
+    },
+  },
+  {
+    index: "lance",
+    name: "Lance",
+    damage: {
+      damage_dice: "1d12",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [
+      {
+        index: "reach",
+      },
+      {
+        index: "special",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "morningstar",
+    name: "Morningstar",
+    damage: {
+      damage_dice: "1d8",
+      damage_type: {
+        index: "piercing",
+      },
+    },
+    properties: [],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+  {
+    index: "scimitar",
+    name: "Scimitar",
+    damage: {
+      damage_dice: "1d6",
+      damage_type: {
+        index: "slashing",
+      },
+    },
+    properties: [
+      {
+        index: "finesse",
+      },
+      {
+        index: "light",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Melee",
+    range: {
+      normal: 5,
+      long: null,
+    },
+  },
+];
