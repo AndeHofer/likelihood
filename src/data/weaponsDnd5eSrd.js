@@ -349,6 +349,25 @@ export const weaponsDnd5Srd = [
     },
   },
   {
+    index: "net",
+    name: "Net",
+    damage: null,
+    properties: [
+      {
+        index: "thrown",
+      },
+      {
+        index: "special",
+      },
+    ],
+    weapon_category: "Martial",
+    weapon_range: "Ranged",
+    range: {
+      normal: 5,
+      long: 15,
+    },
+  },
+  {
     index: "longsword",
     name: "Longsword",
     damage: {

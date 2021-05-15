@@ -170,7 +170,7 @@ class DamageCalculator extends React.Component {
                         (weapon) => weapon.weapon_range === "Melee"
                       ),
                       "Ranged Weapons": weaponsDnd5Srd.filter(
-                        (weapon) => weapon.weapon_range === "Ranged"
+                        (weapon) => weapon.weapon_range === "Ranged" && weapon.index !== "net"
                       ),
                     }}
                     onValueChange={this.handleWeaponsDnd5Change}
