@@ -4,7 +4,7 @@ import NumberInput from "./components/NumberInput";
 import DynamicSelect from "./components/DynamicSelect";
 import SelectWithOptGroup from "./components/SelectWithOptGroup";
 import { weaponsPF2 } from "./data/weaponsPF2";
-import { weaponsDnd5Srd } from "./data/weaponsDnd5eSrd";
+import { weaponsDnd5 } from "./data/weaponsDnd5e_open5e";
 import { calculatePF2WeaponDamage } from "./calculatorFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -164,13 +164,15 @@ class DamageCalculator extends React.Component {
                   <SelectWithOptGroup
                     optionValueAttribute="index"
                     optionLabelAttribute="name"
-                    optionLabelAdditionAttribute="damage.damage_dice"
+                    optionLabelAdditionAttribute="damage_dice"
                     options={{
-                      "Melee Weapons": weaponsDnd5Srd.filter(
-                        (weapon) => weapon.weapon_range === "Melee"
+                      "Melee Weapons": weaponsDnd5.filter((weapon) =>
+                        weapon.category.includes("Melee")
                       ),
-                      "Ranged Weapons": weaponsDnd5Srd.filter(
-                        (weapon) => weapon.weapon_range === "Ranged" && weapon.index !== "net"
+                      "Ranged Weapons": weaponsDnd5.filter(
+                        (weapon) =>
+                          weapon.category.includes("Ranged") &&
+                          weapon.slug !== "net"
                       ),
                     }}
                     onValueChange={this.handleWeaponsDnd5Change}

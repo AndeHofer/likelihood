@@ -26,7 +26,7 @@
     }
   }
 }*/
-export const weaponsDnd5Srd = [
+export const weaponsDnd5 = [
   {
     index: "crossbow-hand",
     name: "Crossbow, hand",
