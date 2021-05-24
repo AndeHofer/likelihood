@@ -60,3 +60,8 @@
 .select-runes {
   width: 80px;
 }
+
+.damage-result-table tr,
+.damage-result-table td {
+  border: none;
+}

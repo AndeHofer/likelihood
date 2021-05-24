@@ -415,13 +415,17 @@ export function calculateDnD5WeaponDamage(weapon, strength) {
       Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
     );
 
+    const critMin = min + countDice;
+    const critMedium = medium + Number(((1 + diceValue) * countDice) / 2);
+    const critMax = max + (countDice * diceValue);
+
     return {
       min: min,
       medium: medium,
       max: max,
-      //critMin: critMin,
-      //critMax: critMax,
-      //critMedium: critMedium,
+      critMin: critMin,
+      critMax: critMax,
+      critMedium: critMedium,
     };
   }
   return "";
