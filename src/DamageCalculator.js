@@ -150,8 +150,6 @@ class DamageCalculator extends React.Component {
             </tr>
             <tr>
               <td>
-                {" "}
-                <div>
                   <SelectWithOptGroup
                     optionValueAttribute="name"
                     optionLabelAttribute="name"
@@ -169,7 +167,6 @@ class DamageCalculator extends React.Component {
                     onValueChange={this.handleWeaponsDnD5Change}
                     emptyLabel="Select Weapon"
                   />
-                </div>
               </td>
               <td>
                 <div>

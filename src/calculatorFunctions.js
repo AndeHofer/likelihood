@@ -311,24 +311,24 @@ export function calculatePF2WeaponDamage(
           break;
 
         case "Bow":
-          critSpecMin = " + possible stuck to surface (DC 10 Athletic)";
-          critSpecMed = " + possible stuck to surface (DC 10 Athletic)";
-          critSpecMax = " + possible stuck to surface (DC 10 Athletic)";
+          critSpecMin = " + possible stuck to surface";
+          critSpecMed = " + possible stuck to surface";
+          critSpecMax = " + possible stuck to surface";
           break;
 
         case "Brawling":
           critSpecMin =
-            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+            " + possilbe slowed 1";
           critSpecMed =
-            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+            " + possilbe slowed 1";
           critSpecMax =
-            " + Fortitude save to class DC -> slowed 1 until end of your next round";
+            " + possilbe slowed 1";
           break;
 
         case "Club":
-          critSpecMin = " + knocked away (up to 10 feet)";
-          critSpecMed = " + knocked away (up to 10 feet)";
-          critSpecMax = " + knocked away (up to 10 feet)";
+          critSpecMin = " + knocked away";
+          critSpecMed = " + knocked away";
+          critSpecMax = " + knocked away";
           break;
 
         case "Pick":
@@ -338,9 +338,9 @@ export function calculatePF2WeaponDamage(
           break;
 
         case "Polearm":
-          critSpecMin = " + moved 5 feet away (direction your choice)";
-          critSpecMed = " + moved 5 feet away (direction your choice)";
-          critSpecMax = " + moved 5 feet away (direction your choice)";
+          critSpecMin = " + moved 5 feet away";
+          critSpecMed = " + moved 5 feet away";
+          critSpecMax = " + moved 5 feet away";
           break;
 
         case "Shield":
@@ -350,21 +350,21 @@ export function calculatePF2WeaponDamage(
           break;
 
         case "Sling":
-          critSpecMin = " + Fortitude save to class DC -> stunned 1";
-          critSpecMed = " + Fortitude save to class DC -> stunned 1";
-          critSpecMax = " + Fortitude save to class DC -> stunned 1";
+          critSpecMin = " + possible stunned 1";
+          critSpecMed = " + possible stunned 1";
+          critSpecMax = " + possible stunned 1";
           break;
 
         case "Spear":
-          critSpecMin = " + clumsy 1 until start of your next round";
-          critSpecMed = " + clumsy 1 until start of your next round";
-          critSpecMax = " + clumsy 1 until start of your next round";
+          critSpecMin = " + clumsy 1";
+          critSpecMed = " + clumsy 1";
+          critSpecMax = " + clumsy 1";
           break;
 
         case "Sword":
-          critSpecMin = " + flat-footed until start of your next round";
-          critSpecMed = " + flat-footed until start of your next round";
-          critSpecMax = " + flat-footed until start of your next round";
+          critSpecMin = " + flat-footed";
+          critSpecMed = " + flat-footed";
+          critSpecMax = " + flat-footed";
           break;
 
         case "Hammer":

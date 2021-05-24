@@ -8,12 +8,14 @@
   width: 600px;
   border-collapse: separate;
   border-spacing: 5px;
+  
 }
 .calc-result-table tr,
 .calc-result-table td,
 .calc-result-table th {
   border: 1px solid black;
   padding: 5px;
+  vertical-align: top;
 }
 
 .calc-input-table {
