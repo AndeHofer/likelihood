@@ -230,27 +230,21 @@ class DamageCalculator extends React.Component {
             </tr>
             <tr>
               <td>
-                <strong>
-                  {weaponResultDnD5.min ? weaponResultDnD5.min : ""}
-                </strong>
-                {weaponResultDnD5.min ? " to " : ""}
-                <strong>
-                  {weaponResultDnD5.critMax ? weaponResultDnD5.critMax : ""}
-                </strong>
-                {weaponResultDnD5.min ? " damage " : ""}
+                {weaponResultDnD5.min && (
+                  <>
+                    <strong>{weaponResultDnD5.min}</strong> to{" "}
+                    <strong>{weaponResultDnD5.critMax}</strong> damage
+                  </>
+                )}
               </td>
               <td>
-                <strong>
-                  {weaponResultPF2.min ? weaponResultPF2.min : ""}
-                </strong>
-                {weaponResultPF2.min ? " to " : ""}
-                <strong>
-                  {weaponResultPF2.critMax ? weaponResultPF2.critMax : ""}
-                </strong>
-                {weaponResultPF2.min ? " damage " : ""}
-                {weaponResultPF2.critSpecMax ? weaponResultPF2.critSpecMax : ""}
-
-                <br />
+                {weaponResultPF2.min && (
+                  <>
+                    <strong>{weaponResultPF2.min}</strong> to{" "}
+                    <strong>{weaponResultPF2.critMax}</strong> damage
+                    {weaponResultPF2.critSpecMax}
+                  </>
+                )}
               </td>
             </tr>
             <tr>
@@ -259,22 +253,40 @@ class DamageCalculator extends React.Component {
                   <table className="damage-result-table">
                     <tbody>
                       <tr>
-                        <td>Min: {weaponResultDnD5.min}</td>
+                        <td>
+                          <strong>Min:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.min}</td>
                       </tr>
                       <tr>
-                        <td>Min Crit: {weaponResultDnD5.critMin}</td>
+                        <td>
+                          <strong>Min Crit:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.critMin}</td>
                       </tr>
                       <tr>
-                        <td>Med: {weaponResultDnD5.medium}</td>
+                        <td>
+                          <strong>Med:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.medium}</td>
                       </tr>
                       <tr>
-                        <td>Med Crit: {weaponResultDnD5.critMedium}</td>
+                        <td>
+                          <strong>Med Crit:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.critMedium}</td>
                       </tr>
                       <tr>
-                        <td>Max: {weaponResultDnD5.max}</td>
+                        <td>
+                          <strong>Max:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.max}</td>
                       </tr>
                       <tr>
-                        <td>Max Crit: {weaponResultDnD5.critMax}</td>
+                        <td>
+                          <strong>Max Crit:</strong>
+                        </td>
+                        <td> {weaponResultDnD5.critMax}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -285,31 +297,46 @@ class DamageCalculator extends React.Component {
                   <table className="damage-result-table">
                     <tbody>
                       <tr>
-                        <td>Min: {weaponResultPF2.min}</td>
+                        <td>
+                          <strong>Min:</strong>
+                        </td>
+                        <td>{weaponResultPF2.min}</td>
                       </tr>
                       <tr>
                         <td>
-                          Min Crit:
+                          <strong>Min Crit:</strong>
+                        </td>
+                        <td>
                           {weaponResultPF2.critMin}
                           {weaponResultPF2.critSpecMin}
                         </td>
                       </tr>
                       <tr>
-                        <td>Med: {weaponResultPF2.medium}</td>
+                        <td>
+                          <strong>Med: </strong>
+                        </td>
+                        <td>{weaponResultPF2.medium}</td>
                       </tr>
                       <tr>
                         <td>
-                          <strong>Med Crit: </strong>
+                          <strong>Med Crit:</strong>
+                        </td>
+                        <td>
                           {weaponResultPF2.critMedium}
                           {weaponResultPF2.critSpecMed}
                         </td>
                       </tr>
                       <tr>
-                        <td>Max: {weaponResultPF2.max}</td>
+                        <td>
+                          <strong>Max:</strong>
+                        </td>
+                        <td> {weaponResultPF2.max}</td>
                       </tr>
                       <tr>
                         <td>
-                          Max Crit:
+                          <strong>Max Crit:</strong>
+                        </td>
+                        <td>
                           {weaponResultPF2.critMax}
                           {weaponResultPF2.critSpecMax}
                         </td>

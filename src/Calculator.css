@@ -61,7 +61,18 @@
   width: 80px;
 }
 
+.damage-result-table {
+  width: 100%;
+}
 .damage-result-table tr,
 .damage-result-table td {
   border: none;
+}
+
+.damage-result-table td:nth-child(1){
+  white-space: nowrap;
+}
+
+.damage-result-table tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
