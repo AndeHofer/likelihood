@@ -400,3 +400,29 @@ export function calculatePF2WeaponDamage(
   }
   return "";
 }
+
+export function calculateDnD5WeaponDamage(weapon, strength) {
+  if (weapon) {
+    const countDice = Number(weapon.damage_dice.split("d")[0]);
+    const diceValue = Number(weapon.damage_dice.split("d")[1]);
+
+    const strengthNumber = Number(weapon.category.includes("Melee") ? strength : 0);
+
+    const min = countDice + strengthNumber;
+    const max = countDice * diceValue + strengthNumber;
+
+    const medium = twoDecimalPlaces(
+      Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
+    );
+
+    return {
+      min: min,
+      medium: medium,
+      max: max,
+      //critMin: critMin,
+      //critMax: critMax,
+      //critMedium: critMedium,
+    };
+  }
+  return "";
+}

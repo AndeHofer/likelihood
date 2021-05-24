@@ -9,7 +9,7 @@ class SelectWithOptGroup extends Component {
 
   handleChange(event) {
     this.props.onValueChange(event.target.value);
-    //console.log("Dynamic Select handleChange: " + event.target.value);
+    console.log("Dynamic Select handleChange: " + event.target.value);
   }
 
   renderOptions(optionGroup) {

@@ -1,5 +1,5 @@
 // https://api.open5e.com/weapons/
-export const weaponsDnd5 = [
+export const weaponsDnD5 = [
   {
     name: "Club",
     slug: "club",

@@ -4,8 +4,11 @@ import NumberInput from "./components/NumberInput";
 import DynamicSelect from "./components/DynamicSelect";
 import SelectWithOptGroup from "./components/SelectWithOptGroup";
 import { weaponsPF2 } from "./data/weaponsPF2";
-import { weaponsDnd5 } from "./data/weaponsDnd5e_open5e";
-import { calculatePF2WeaponDamage } from "./calculatorFunctions";
+import { weaponsDnD5 } from "./data/weaponsDnd5e_open5e";
+import {
+  calculateDnD5WeaponDamage,
+  calculatePF2WeaponDamage,
+} from "./calculatorFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -17,7 +20,7 @@ class DamageCalculator extends React.Component {
       strength: "0",
       dexterity: "0",
       selectedWeaponPF2: "",
-      selectedWeaponDnd5: "",
+      selectedWeaponDnD5: "",
       selectedStrikingRune: "0",
       selectedPotencyRune: "0",
       criticalSpecialization: false,
@@ -29,7 +32,7 @@ class DamageCalculator extends React.Component {
     this.handleStrikingRuneChange = this.handleStrikingRuneChange.bind(this);
     this.handleCritSpecChange = this.handleCritSpecChange.bind(this);
     this.handlePotencyRuneChange = this.handlePotencyRuneChange.bind(this);
-    this.handleWeaponsDnd5Change = this.handleWeaponsDnd5Change.bind(this);
+    this.handleWeaponsDnD5Change = this.handleWeaponsDnD5Change.bind(this);
   }
 
   handleStrengthChange(value) {
@@ -64,14 +67,15 @@ class DamageCalculator extends React.Component {
     this.setState({ selectedPotencyRune: value });
   }
 
-  handleWeaponsDnd5Change(value) {
-    this.setState({ selectedWeaponDnd5: value });
+  handleWeaponsDnD5Change(value) {
+    const selected = weaponsDnD5.find((x) => x.name === value);
+    this.setState({ selectedWeaponDnD5: selected });
   }
 
   render() {
     const strength = this.state.strength;
     const dexterity = this.state.dexterity;
-    const weaponResult = calculatePF2WeaponDamage(
+    const weaponResultPF2 = calculatePF2WeaponDamage(
       weaponsPF2,
       this.state.selectedWeaponPF2,
       this.state.strength,
@@ -79,22 +83,26 @@ class DamageCalculator extends React.Component {
       this.state.criticalSpecialization,
       this.state.selectedPotencyRune
     );
-    const weaponDamage = this.state.selectedWeaponPF2
+    const weaponResultDnD5 = calculateDnD5WeaponDamage(
+      this.state.selectedWeaponDnD5,
+      this.state.strength
+    );
+    const weaponDamagePF2 = this.state.selectedWeaponPF2
       ? "Min: " +
-        weaponResult.min +
+        weaponResultPF2.min +
         "\n Min Crit: " +
-        weaponResult.critMin +
-        weaponResult.critSpecMin +
+        weaponResultPF2.critMin +
+        weaponResultPF2.critSpecMin +
         "\nMed: " +
-        weaponResult.medium +
+        weaponResultPF2.medium +
         "\n Med Crit: " +
-        weaponResult.critMedium +
-        weaponResult.critSpecMed +
+        weaponResultPF2.critMedium +
+        weaponResultPF2.critSpecMed +
         "\nMax: " +
-        weaponResult.max +
+        weaponResultPF2.max +
         "\n Max Crit: " +
-        weaponResult.critMax +
-        weaponResult.critSpecMax
+        weaponResultPF2.critMax +
+        weaponResultPF2.critSpecMax
       : "";
     const strikingRuneOptions = [
       { value: "0", label: "No" },
@@ -162,20 +170,20 @@ class DamageCalculator extends React.Component {
                 {" "}
                 <div>
                   <SelectWithOptGroup
-                    optionValueAttribute="index"
+                    optionValueAttribute="name"
                     optionLabelAttribute="name"
                     optionLabelAdditionAttribute="damage_dice"
                     options={{
-                      "Melee Weapons": weaponsDnd5.filter((weapon) =>
+                      "Melee Weapons": weaponsDnD5.filter((weapon) =>
                         weapon.category.includes("Melee")
                       ),
-                      "Ranged Weapons": weaponsDnd5.filter(
+                      "Ranged Weapons": weaponsDnD5.filter(
                         (weapon) =>
                           weapon.category.includes("Ranged") &&
                           weapon.slug !== "net"
                       ),
                     }}
-                    onValueChange={this.handleWeaponsDnd5Change}
+                    onValueChange={this.handleWeaponsDnD5Change}
                     emptyLabel="Select Weapon"
                   />
                 </div>
@@ -238,15 +246,26 @@ class DamageCalculator extends React.Component {
               </td>
             </tr>
             <tr>
-              <td></td>
               <td>
-                <strong>{weaponResult.min ? weaponResult.min : ""}</strong>
-                {weaponResult.min ? " to " : ""}
                 <strong>
-                  {weaponResult.critMax ? weaponResult.critMax : ""}
+                  {weaponResultDnD5.min ? weaponResultDnD5.min : ""}
                 </strong>
-                {weaponResult.min ? " damage " : ""}
-                {weaponResult.critSpecMax ? weaponResult.critSpecMax : ""}
+                {weaponResultDnD5.min ? " to " : ""}
+                <strong>
+                  {weaponResultDnD5.max ? weaponResultDnD5.max : ""}
+                </strong>
+                {weaponResultDnD5.min ? " damage " : ""}
+              </td>
+              <td>
+                <strong>
+                  {weaponResultPF2.min ? weaponResultPF2.min : ""}
+                </strong>
+                {weaponResultPF2.min ? " to " : ""}
+                <strong>
+                  {weaponResultPF2.critMax ? weaponResultPF2.critMax : ""}
+                </strong>
+                {weaponResultPF2.min ? " damage " : ""}
+                {weaponResultPF2.critSpecMax ? weaponResultPF2.critSpecMax : ""}
 
                 <br />
               </td>
@@ -254,7 +273,7 @@ class DamageCalculator extends React.Component {
             <tr>
               <td></td>
               <td>
-                <div className="pre-wrap-div">{weaponDamage}</div>
+                <div className="pre-wrap-div">{weaponDamagePF2}</div>
               </td>
             </tr>
             <tr>
