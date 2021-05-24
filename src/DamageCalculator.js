@@ -87,23 +87,6 @@ class DamageCalculator extends React.Component {
       this.state.selectedWeaponDnD5,
       this.state.strength
     );
-    const weaponDamagePF2 = this.state.selectedWeaponPF2
-      ? "Min: " +
-        weaponResultPF2.min +
-        "\n Min Crit: " +
-        weaponResultPF2.critMin +
-        weaponResultPF2.critSpecMin +
-        "\nMed: " +
-        weaponResultPF2.medium +
-        "\n Med Crit: " +
-        weaponResultPF2.critMedium +
-        weaponResultPF2.critSpecMed +
-        "\nMax: " +
-        weaponResultPF2.max +
-        "\n Max Crit: " +
-        weaponResultPF2.critMax +
-        weaponResultPF2.critSpecMax
-      : "";
     const strikingRuneOptions = [
       { value: "0", label: "No" },
       { value: "1", label: "Normal" },
@@ -252,7 +235,7 @@ class DamageCalculator extends React.Component {
                 </strong>
                 {weaponResultDnD5.min ? " to " : ""}
                 <strong>
-                  {weaponResultDnD5.max ? weaponResultDnD5.max : ""}
+                  {weaponResultDnD5.critMax ? weaponResultDnD5.critMax : ""}
                 </strong>
                 {weaponResultDnD5.min ? " damage " : ""}
               </td>
@@ -271,9 +254,69 @@ class DamageCalculator extends React.Component {
               </td>
             </tr>
             <tr>
-              <td></td>
               <td>
-                <div className="pre-wrap-div">{weaponDamagePF2}</div>
+                {weaponResultDnD5.min && (
+                  <table className="damage-result-table">
+                    <tbody>
+                      <tr>
+                        <td>Min: {weaponResultDnD5.min}</td>
+                      </tr>
+                      <tr>
+                        <td>Min Crit: {weaponResultDnD5.critMin}</td>
+                      </tr>
+                      <tr>
+                        <td>Med: {weaponResultDnD5.medium}</td>
+                      </tr>
+                      <tr>
+                        <td>Med Crit: {weaponResultDnD5.critMedium}</td>
+                      </tr>
+                      <tr>
+                        <td>Max: {weaponResultDnD5.max}</td>
+                      </tr>
+                      <tr>
+                        <td>Max Crit: {weaponResultDnD5.critMax}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
+              </td>
+              <td>
+                {weaponResultPF2.min && (
+                  <table className="damage-result-table">
+                    <tbody>
+                      <tr>
+                        <td>Min: {weaponResultPF2.min}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Min Crit:
+                          {weaponResultPF2.critMin}
+                          {weaponResultPF2.critSpecMin}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Med: {weaponResultPF2.medium}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Med Crit: </strong>
+                          {weaponResultPF2.critMedium}
+                          {weaponResultPF2.critSpecMed}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Max: {weaponResultPF2.max}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Max Crit:
+                          {weaponResultPF2.critMax}
+                          {weaponResultPF2.critSpecMax}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
               </td>
             </tr>
             <tr>
