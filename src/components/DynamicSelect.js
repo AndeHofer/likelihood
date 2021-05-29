@@ -46,11 +46,15 @@ class DynamicSelect extends Component {
   render() {
     const { doNotRenderEmpty } = this.props;
     const { selectClassName } = this.props;
+    const { disabled } = this.props;
+    const { selected } = this.props;
     return (
       <>
         <select
-          onChange={(e) => this.handleChange(e)}
+          style={disabled ? { pointerEvents: "none", opacity: "0.4" } : {}}
+          onChange={this.handleChange}
           className={selectClassName}
+          value={selected}
         >
           {!doNotRenderEmpty && <option value="" key="0" label="" />}
           {this.renderOptions()}

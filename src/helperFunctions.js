@@ -84,3 +84,11 @@ export function enrichDiceWithDamageType(dnd5weaponsArrray) {
   );
   return newArray;
 }
+
+export function dnd5weaponForSneak(weapon) {
+  return (
+    weapon &&
+    (weapon.properties.includes("finesse") ||
+      weapon.category.includes("Ranged"))
+  );
+}

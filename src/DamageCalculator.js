@@ -13,6 +13,7 @@ import {
   getUnitedOptions,
   sortName,
   enrichDiceWithDamageType,
+  dnd5weaponForSneak,
 } from "./helperFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -29,6 +30,7 @@ class DamageCalculator extends React.Component {
       selectedStrikingRune: "0",
       selectedPotencyRune: "0",
       criticalSpecialization: false,
+      selectedRogueDnD5SneakDices: 0,
     };
 
     this.handleStrengthChange = this.handleStrengthChange.bind(this);
@@ -39,6 +41,8 @@ class DamageCalculator extends React.Component {
     this.handlePotencyRuneChange = this.handlePotencyRuneChange.bind(this);
     this.handleWeaponsDnD5Change = this.handleWeaponsDnD5Change.bind(this);
     this.handleWeaponsUnitedChange = this.handleWeaponsUnitedChange.bind(this);
+    this.handleRogueDnD5SneakDicesChange =
+      this.handleRogueDnD5SneakDicesChange.bind(this);
   }
 
   handleStrengthChange(value) {
@@ -67,6 +71,9 @@ class DamageCalculator extends React.Component {
   handleWeaponsDnD5Change(value) {
     const selected = weaponsDnD5.find((x) => x.name === value);
     this.setState({ selectedWeaponDnD5: selected });
+    if (!dnd5weaponForSneak(selected)) {
+      this.setState({ selectedRogueDnD5SneakDices: 0 });
+    }
   }
 
   handleWeaponsPF2Change(value) {
@@ -82,6 +89,9 @@ class DamageCalculator extends React.Component {
     const selectedDnD5 = weaponsDnD5.find((x) => x.name === value);
     if (selectedDnD5) {
       this.setState({ selectedWeaponDnD5: selectedDnD5 });
+      if (!dnd5weaponForSneak(selectedDnD5)) {
+        this.setState({ selectedRogueDnD5SneakDices: 0 });
+      }
     }
     let selectedPF2 = weaponsPF2.meleeWeapons.find((x) => x.name === value);
     if (!selectedPF2) {
@@ -90,6 +100,10 @@ class DamageCalculator extends React.Component {
     if (selectedPF2) {
       this.setState({ selectedWeaponPF2: selectedPF2 });
     }
+  }
+
+  handleRogueDnD5SneakDicesChange(value) {
+    this.setState({ selectedRogueDnD5SneakDices: value });
   }
 
   render() {
@@ -113,6 +127,20 @@ class DamageCalculator extends React.Component {
       { value: "1", label: "Normal" },
       { value: "2", label: "Greater" },
       { value: "3", label: "Major" },
+    ];
+
+    const rogueDnD5SneakDices = [
+      { value: 0, label: "No" },
+      { value: 1, label: "1d6" },
+      { value: 2, label: "2d6" },
+      { value: 3, label: "3d6" },
+      { value: 4, label: "4d6" },
+      { value: 5, label: "5d6" },
+      { value: 6, label: "6d6" },
+      { value: 7, label: "7d6" },
+      { value: 8, label: "8d6" },
+      { value: 9, label: "9d6" },
+      { value: 10, label: "10d6" },
     ];
 
     const potencyRuneOptions = [
@@ -183,37 +211,52 @@ class DamageCalculator extends React.Component {
             </tr>
             <tr>
               <td>
-                <SelectWithOptGroup
-                  ref={this.dnd5WeaponSelect}
-                  optionValueAttribute="name"
-                  optionLabelAttribute="name"
-                  optionLabelAdditionAttribute="damage_dice"
-                  options={{
-                    "Melee Weapons": enrichDiceWithDamageType(
-                      weaponsDnD5
-                        .filter((weapon) => weapon.category.includes("Melee"))
-                        .sort(sortName)
-                    ),
-                    "Ranged Weapons": enrichDiceWithDamageType(
-                      weaponsDnD5
-                        .filter(
-                          (weapon) =>
-                            weapon.category.includes("Ranged") &&
-                            weapon.slug !== "net" &&
-                            weapon.slug !== "blowgun"
-                        )
-                        .sort(sortName)
-                    ),
-                  }}
-                  onValueChange={this.handleWeaponsDnD5Change}
-                  emptyLabel="Select Weapon"
-                  id="DnD5Select"
-                  selected={
-                    this.state.selectedWeaponDnD5
-                      ? this.state.selectedWeaponDnD5.name
-                      : ""
-                  }
-                />
+                <div>
+                  <SelectWithOptGroup
+                    ref={this.dnd5WeaponSelect}
+                    optionValueAttribute="name"
+                    optionLabelAttribute="name"
+                    optionLabelAdditionAttribute="damage_dice"
+                    options={{
+                      "Melee Weapons": enrichDiceWithDamageType(
+                        weaponsDnD5
+                          .filter((weapon) => weapon.category.includes("Melee"))
+                          .sort(sortName)
+                      ),
+                      "Ranged Weapons": enrichDiceWithDamageType(
+                        weaponsDnD5
+                          .filter(
+                            (weapon) =>
+                              weapon.category.includes("Ranged") &&
+                              weapon.slug !== "net" &&
+                              weapon.slug !== "blowgun"
+                          )
+                          .sort(sortName)
+                      ),
+                    }}
+                    onValueChange={this.handleWeaponsDnD5Change}
+                    emptyLabel="Select Weapon"
+                    id="DnD5Select"
+                    selected={
+                      this.state.selectedWeaponDnD5
+                        ? this.state.selectedWeaponDnD5.name
+                        : ""
+                    }
+                  />
+                </div>
+                <br />
+                <div>
+                  <DynamicSelect
+                    options={rogueDnD5SneakDices}
+                    onValueChange={this.handleRogueDnD5SneakDicesChange}
+                    doNotRenderEmpty={true}
+                    disabled={
+                      !dnd5weaponForSneak(this.state.selectedWeaponDnD5)
+                    }
+                    selected={this.state.selectedRogueDnD5SneakDices}
+                  />{" "}
+                  Sneak Attack Dices
+                </div>
               </td>
               <td>
                 <div>
