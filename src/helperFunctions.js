@@ -74,3 +74,13 @@ function uniteWeapons(array1, array2, orgin1, orgin2) {
   }
   return newArray;
 }
+
+export function enrichDiceWithDamageType(dnd5weaponsArrray) {
+  let newArray = JSON.parse(JSON.stringify(dnd5weaponsArrray));
+  newArray.forEach(
+    (item) =>
+      (item.damage_dice =
+        item.damage_dice + " " + item.damage_type.charAt(0).toUpperCase())
+  );
+  return newArray;
+}

@@ -317,12 +317,9 @@ export function calculatePF2WeaponDamage(
           break;
 
         case "Brawling":
-          critSpecMin =
-            " + possilbe slowed 1";
-          critSpecMed =
-            " + possilbe slowed 1";
-          critSpecMax =
-            " + possilbe slowed 1";
+          critSpecMin = " + possilbe slowed 1";
+          critSpecMed = " + possilbe slowed 1";
+          critSpecMax = " + possilbe slowed 1";
           break;
 
         case "Club":
@@ -401,23 +398,29 @@ export function calculatePF2WeaponDamage(
   return "";
 }
 
-export function calculateDnD5WeaponDamage(weapon, strength) {
+export function calculateDnD5WeaponDamage(weapon, strength, dexterity) {
   if (weapon) {
     const countDice = Number(weapon.damage_dice.split("d")[0]);
-    const diceValue = Number(weapon.damage_dice.split("d")[1]);
+    const diceValue = Number(weapon.damage_dice.split("d")[1].split(" ")[0]);
 
-    const strengthNumber = Number(weapon.category.includes("Melee") ? strength : 0);
+    const abilityModifier = Number(
+      weapon.category.includes("Melee")
+        ? (weapon.properties.includes("finesse") && dexterity > strength ? dexterity : strength)
+        : (weapon.category.includes("Ranged")
+        ? dexterity
+        : 0)
+    );
 
-    const min = countDice + strengthNumber;
-    const max = countDice * diceValue + strengthNumber;
+    const min = countDice + abilityModifier;
+    const max = countDice * diceValue + abilityModifier;
 
     const medium = twoDecimalPlaces(
-      Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
+      Number(((1 + diceValue) * countDice) / 2 + abilityModifier)
     );
 
     const critMin = min + countDice;
     const critMedium = medium + Number(((1 + diceValue) * countDice) / 2);
-    const critMax = max + (countDice * diceValue);
+    const critMax = max + countDice * diceValue;
 
     return {
       min: min,

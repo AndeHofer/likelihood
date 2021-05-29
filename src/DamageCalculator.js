@@ -9,7 +9,11 @@ import {
   calculateDnD5WeaponDamage,
   calculatePF2WeaponDamage,
 } from "./calculatorFunctions";
-import { getUnitedOptions, sortName } from "./helperFunctions";
+import {
+  getUnitedOptions,
+  sortName,
+  enrichDiceWithDamageType,
+} from "./helperFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -101,7 +105,8 @@ class DamageCalculator extends React.Component {
     );
     const weaponResultDnD5 = calculateDnD5WeaponDamage(
       this.state.selectedWeaponDnD5,
-      this.state.strength
+      this.state.strength,
+      this.state.dexterity
     );
     const strikingRuneOptions = [
       { value: "0", label: "No" },
@@ -184,17 +189,21 @@ class DamageCalculator extends React.Component {
                   optionLabelAttribute="name"
                   optionLabelAdditionAttribute="damage_dice"
                   options={{
-                    "Melee Weapons": weaponsDnD5
-                      .filter((weapon) => weapon.category.includes("Melee"))
-                      .sort(sortName),
-                    "Ranged Weapons": weaponsDnD5
-                      .filter(
-                        (weapon) =>
-                          weapon.category.includes("Ranged") &&
-                          weapon.slug !== "net" &&
-                          weapon.slug !== "blowgun"
-                      )
-                      .sort(sortName),
+                    "Melee Weapons": enrichDiceWithDamageType(
+                      weaponsDnD5
+                        .filter((weapon) => weapon.category.includes("Melee"))
+                        .sort(sortName)
+                    ),
+                    "Ranged Weapons": enrichDiceWithDamageType(
+                      weaponsDnD5
+                        .filter(
+                          (weapon) =>
+                            weapon.category.includes("Ranged") &&
+                            weapon.slug !== "net" &&
+                            weapon.slug !== "blowgun"
+                        )
+                        .sort(sortName)
+                    ),
                   }}
                   onValueChange={this.handleWeaponsDnD5Change}
                   emptyLabel="Select Weapon"

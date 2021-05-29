@@ -10,7 +10,7 @@ class SelectWithOptGroup extends Component {
   handleChange(event) {
     this.setState({ value: event.target.value });
     this.props.onValueChange(event.target.value);
-    console.log("SelectWithOptGroup handleChange: " + event.target.value);
+    //console.log("SelectWithOptGroup handleChange: " + event.target.value);
   }
 
   renderOptions(optionGroup) {
