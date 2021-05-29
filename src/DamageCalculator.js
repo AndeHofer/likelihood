@@ -9,7 +9,7 @@ import {
   calculateDnD5WeaponDamage,
   calculatePF2WeaponDamage,
 } from "./calculatorFunctions";
-import { getUnitedOptions } from "./helperFunctions";
+import { getUnitedOptions, sortName } from "./helperFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -184,14 +184,17 @@ class DamageCalculator extends React.Component {
                   optionLabelAttribute="name"
                   optionLabelAdditionAttribute="damage_dice"
                   options={{
-                    "Melee Weapons": weaponsDnD5.filter((weapon) =>
-                      weapon.category.includes("Melee")
-                    ),
-                    "Ranged Weapons": weaponsDnD5.filter(
-                      (weapon) =>
-                        weapon.category.includes("Ranged") &&
-                        weapon.slug !== "net"
-                    ),
+                    "Melee Weapons": weaponsDnD5
+                      .filter((weapon) => weapon.category.includes("Melee"))
+                      .sort(sortName),
+                    "Ranged Weapons": weaponsDnD5
+                      .filter(
+                        (weapon) =>
+                          weapon.category.includes("Ranged") &&
+                          weapon.slug !== "net" &&
+                          weapon.slug !== "blowgun"
+                      )
+                      .sort(sortName),
                   }}
                   onValueChange={this.handleWeaponsDnD5Change}
                   emptyLabel="Select Weapon"
@@ -210,12 +213,14 @@ class DamageCalculator extends React.Component {
                     optionLabelAttribute="name"
                     optionLabelAdditionAttribute="damage"
                     options={{
-                      "Melee Weapons": weaponsPF2.meleeWeapons,
-                      "Ranged Weapons": weaponsPF2.rangeWeapons.filter(
-                        (weapon) =>
-                          weapon.category !== "Ammunition" &&
-                          weapon.name !== "Alchemical Bomb"
-                      ),
+                      "Melee Weapons": weaponsPF2.meleeWeapons.sort(sortName),
+                      "Ranged Weapons": weaponsPF2.rangeWeapons
+                        .filter(
+                          (weapon) =>
+                            weapon.category !== "Ammunition" &&
+                            weapon.name !== "Alchemical Bomb"
+                        )
+                        .sort(sortName),
                     }}
                     onValueChange={this.handleWeaponsPF2Change}
                     emptyLabel="Select Weapon"

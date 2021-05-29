@@ -26,7 +26,10 @@ export function getUnitedOptions(pf2Weapons, dndWeapons) {
         weapon.category !== "Ammunition" && weapon.name !== "Alchemical Bomb"
     ),
     dndWeapons.filter(
-      (weapon) => weapon.category.includes("Ranged") && weapon.slug !== "net"
+      (weapon) =>
+        weapon.category.includes("Ranged") &&
+        weapon.slug !== "net" &&
+        weapon.slug !== "blowgun"
     ),
     "PF2",
     "DnD5"
@@ -34,7 +37,7 @@ export function getUnitedOptions(pf2Weapons, dndWeapons) {
   return { "Melee Weapons": melee, "Ranged Weapons": ranged };
 }
 
-function sortName(a, b) {
+export function sortName(a, b) {
   var nameA = a.name.toUpperCase(); // ignore upper and lowercase
   var nameB = b.name.toUpperCase(); // ignore upper and lowercase
   if (nameA < nameB) {
