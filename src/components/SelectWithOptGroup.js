@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {objectByString} from "./../helperFunctions";
+import { objectByString } from "./../helperFunctions";
 
 class SelectWithOptGroup extends Component {
   constructor(props) {
@@ -8,8 +8,9 @@ class SelectWithOptGroup extends Component {
   }
 
   handleChange(event) {
+    this.setState({ value: event.target.value });
     this.props.onValueChange(event.target.value);
-    //console.log("SelectWithOptGroup handleChange: " + event.target.value);
+    console.log("SelectWithOptGroup handleChange: " + event.target.value);
   }
 
   renderOptions(optionGroup) {
@@ -29,7 +30,9 @@ class SelectWithOptGroup extends Component {
                 optionLabelAttribute
                   ? option[optionLabelAttribute] +
                     (optionLabelAdditionAttribute
-                      ? " (" + objectByString(option, optionLabelAdditionAttribute) + ")"
+                      ? " (" +
+                        objectByString(option, optionLabelAdditionAttribute) +
+                        ")"
                       : "")
                   : option
               }
@@ -64,9 +67,11 @@ class SelectWithOptGroup extends Component {
   render() {
     const { doNotRenderEmpty } = this.props;
     const { emptyLabel } = this.props;
+    const { id } = this.props;
+    const { selected } = this.props;
     return (
       <>
-        <select onChange={(e) => this.handleChange(e)}>
+        <select id={id} value={selected} onChange={(e) => this.handleChange(e)}>
           {!doNotRenderEmpty && (
             <option value="" key="0" label={emptyLabel ? emptyLabel : ""} />
           )}
@@ -76,7 +81,5 @@ class SelectWithOptGroup extends Component {
     );
   }
 }
-
-
 
 export default SelectWithOptGroup;
