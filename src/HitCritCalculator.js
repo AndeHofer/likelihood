@@ -7,7 +7,7 @@ import CheckboxInput from "./components/CheckboxInput";
 import { pf2Monsters } from "./data/monstersPF2";
 import RadioInputGroup from "./components/RadioInputGroup";
 import CollapseButton from "./components/CollapseButton";
-import { calculateHitChance, calculateCritChance } from './calculatorFunctions'
+import { calculateHitChance, calculateCritChance } from "./calculatorFunctions";
 
 class HitCritCalculator extends React.Component {
   constructor(props) {
@@ -21,6 +21,7 @@ class HitCritCalculator extends React.Component {
       sight: 0,
       keenEyes: false,
       collapseOpen: true,
+      improvedCritical: false,
     };
 
     this.handleAcChange = this.handleAcChange.bind(this);
@@ -32,6 +33,8 @@ class HitCritCalculator extends React.Component {
     this.handleSightChange = this.handleSightChange.bind(this);
     this.handleKeenEyesChange = this.handleKeenEyesChange.bind(this);
     this.handleCollapseButtonClick = this.handleCollapseButtonClick.bind(this);
+    this.handleImprovedCriticalChange =
+      this.handleImprovedCriticalChange.bind(this);
   }
 
   handleAcChange(value) {
@@ -71,6 +74,10 @@ class HitCritCalculator extends React.Component {
 
   handleCollapseButtonClick(value) {
     this.setState({ collapseOpen: !this.state.collapseOpen });
+  }
+
+  handleImprovedCriticalChange(value) {
+    this.setState({ improvedCritical: !this.state.improvedCritical });
   }
 
   render() {
@@ -122,7 +129,8 @@ class HitCritCalculator extends React.Component {
       adv,
       "DnD 5e",
       hluck,
-      0
+      0,
+      this.state.improvedCritical
     );
     const likelihoodCritPF = calculateCritChance(
       attack,
@@ -130,7 +138,8 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sightEndValue
+      sightEndValue,
+      false
     );
     const likelihoodCritPF2nd = calculateCritChance(
       attack ? (agile ? attack - 4 : attack - 5) : attack,
@@ -138,7 +147,8 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sightEndValue
+      sightEndValue,
+      false
     );
     const likelihoodCritPF3rd = calculateCritChance(
       attack ? (agile ? attack - 8 : attack - 10) : attack,
@@ -146,7 +156,8 @@ class HitCritCalculator extends React.Component {
       "Normal",
       "PF 2e",
       false,
-      sightEndValue
+      sightEndValue,
+      false
     );
 
     const radioAdv = [
@@ -239,6 +250,11 @@ class HitCritCalculator extends React.Component {
                     name="adv"
                     selectedValue={adv}
                   />
+                  <CheckboxInput
+                    value={this.state.improvedCritical}
+                    onValueChange={this.handleImprovedCriticalChange}
+                  />{" "}
+                  Improved Critical
                 </div>
               </td>
               <td>

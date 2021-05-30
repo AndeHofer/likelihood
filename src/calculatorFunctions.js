@@ -50,7 +50,15 @@ export function calculateHitChance(attack, ac, adv, sys, hluck, sight) {
   return result;
 }
 
-export function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
+export function calculateCritChance(
+  attack,
+  ac,
+  adv,
+  sys,
+  hluck,
+  sight,
+  improvedCrit
+) {
   let result = {
     text: sys === "DnD 5e" ? "DnD5e Crit: " : "PF2e Crit: ",
     value: Number(0),
@@ -67,8 +75,18 @@ export function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
       result.value = Number(1 / 20 - (1 / 20) * (19 / 20));
     }
     result.text = result.text + " = " + fourDecimalPlaces(result.value) + "\n";
+    if (improvedCrit) {
+      result.text =
+        result.text +
+        "  Improved Crit: " +
+        fourDecimalPlaces(result.value) +
+        " + (1/20)";
+      result.value = result.value + 1 / 20;
+      result.text =
+        result.text + " = " + fourDecimalPlaces(result.value) + "\n";
+    }
     // halflings luck gives you at 1 another chance to roll a 20
-    if (hluck) {
+    if (hluck && !improvedCrit) {
       result.text =
         result.text +
         "  H Luck: " +
@@ -77,7 +95,16 @@ export function calculateCritChance(attack, ac, adv, sys, hluck, sight) {
       result.value = result.value + (1 / 20) * (1 / 20);
       result.text =
         result.text + " = " + fourDecimalPlaces(result.value) + "\n";
-    }
+    } else if(hluck && improvedCrit){
+      result.text =
+      result.text +
+      "  H Luck & Improved Crit: " +
+      fourDecimalPlaces(result.value) +
+      " + (1 / 20) * (1 / 10)";
+    result.value = result.value + (1 / 20) * (1 / 10);
+    result.text =
+      result.text + " = " + fourDecimalPlaces(result.value) + "\n";
+    } 
   } else {
     if ((ac || ac === 0) && (attack || attack === 0)) {
       let maxHit = Number(parseInt(attack) + 20 - parseInt(ac));
@@ -270,7 +297,7 @@ export function calculatePF2WeaponDamage(
     const max = countDice * diceValue + strengthNumber + sneakDices * 6;
     const medium = twoDecimalPlaces(
       Number(
-        ((1 + diceValue) * countDice) / 2 + strengthNumber + (3.5 * sneakDices)
+        ((1 + diceValue) * countDice) / 2 + strengthNumber + 3.5 * sneakDices
       )
     );
 
