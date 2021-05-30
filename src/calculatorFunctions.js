@@ -233,12 +233,15 @@ export function calculatePF2WeaponDamage(
   strength,
   striking,
   critSpecBoolean,
-  potency
+  potency,
+  sneakDices
 ) {
   if (weapon) {
     let critSpecMin = "";
     let critSpecMed = "";
     let critSpecMax = "";
+
+    sneakDices = Number(sneakDices);
 
     const countDice =
       Number(weapon.damage.split("d")[0]) + Number(striking ? striking : 0);
@@ -263,10 +266,12 @@ export function calculatePF2WeaponDamage(
         : weapon.weaponTraits.find((trait) => trait.trim() === "Propulsive")
         ? Number(strength ? Math.floor(strength / 2) : 0)
         : 0;
-    const min = countDice + strengthNumber;
-    const max = countDice * diceValue + strengthNumber;
+    const min = countDice + strengthNumber + sneakDices;
+    const max = countDice * diceValue + strengthNumber + sneakDices * 6;
     const medium = twoDecimalPlaces(
-      Number(((1 + diceValue) * countDice) / 2 + strengthNumber)
+      Number(
+        ((1 + diceValue) * countDice) / 2 + strengthNumber + (3, 5 * sneakDices)
+      )
     );
 
     const critMin =
@@ -275,7 +280,10 @@ export function calculatePF2WeaponDamage(
       (fatalValue ? 1 : 0);
 
     const critMax =
-      (fatalValue ? countDice * fatalValue + strengthNumber : max) * 2 +
+      (fatalValue
+        ? countDice * fatalValue + strengthNumber + 6 * sneakDices
+        : max) *
+        2 +
       (deadlyValue
         ? striking === "2"
           ? deadlyValue * 2
@@ -287,7 +295,7 @@ export function calculatePF2WeaponDamage(
 
     const critMedium =
       (fatalValue
-        ? ((1 + fatalValue) * countDice) / 2 + strengthNumber
+        ? ((1 + fatalValue) * countDice) / 2 + strengthNumber + 3.5 * sneakDices
         : medium) *
         2 +
       (deadlyValue
@@ -398,29 +406,40 @@ export function calculatePF2WeaponDamage(
   return "";
 }
 
-export function calculateDnD5WeaponDamage(weapon, strength, dexterity) {
+export function calculateDnD5WeaponDamage(
+  weapon,
+  strength,
+  dexterity,
+  sneakDices
+) {
   if (weapon) {
     const countDice = Number(weapon.damage_dice.split("d")[0]);
     const diceValue = Number(weapon.damage_dice.split("d")[1].split(" ")[0]);
 
     const abilityModifier = Number(
       weapon.category.includes("Melee")
-        ? (weapon.properties.includes("finesse") && dexterity > strength ? dexterity : strength)
-        : (weapon.category.includes("Ranged")
+        ? weapon.properties.includes("finesse") && dexterity > strength
+          ? dexterity
+          : strength
+        : weapon.category.includes("Ranged")
         ? dexterity
-        : 0)
+        : 0
     );
+    sneakDices = Number(sneakDices);
 
-    const min = countDice + abilityModifier;
-    const max = countDice * diceValue + abilityModifier;
+    const min = countDice + abilityModifier + sneakDices;
+    const max = countDice * diceValue + abilityModifier + sneakDices * 6;
 
     const medium = twoDecimalPlaces(
-      Number(((1 + diceValue) * countDice) / 2 + abilityModifier)
+      Number(
+        ((1 + diceValue) * countDice) / 2 + abilityModifier + sneakDices * 3.5
+      )
     );
 
-    const critMin = min + countDice;
-    const critMedium = medium + Number(((1 + diceValue) * countDice) / 2);
-    const critMax = max + countDice * diceValue;
+    const critMin = min + countDice + sneakDices;
+    const critMedium =
+      medium + Number(((1 + diceValue) * countDice) / 2 + sneakDices * 3.5);
+    const critMax = max + countDice * diceValue + sneakDices * 6;
 
     return {
       min: min,

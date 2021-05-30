@@ -1,3 +1,5 @@
+import { weaponsPF2 } from "./data/weaponsPF2";
+
 export function objectByString(o, s) {
   s = s.replace(/\[(\w+)\]/g, ".$1"); // convert indexes to properties
   s = s.replace(/^\./, ""); // strip a leading dot
@@ -91,4 +93,21 @@ export function dnd5weaponForSneak(weapon) {
     (weapon.properties.includes("finesse") ||
       weapon.category.includes("Ranged"))
   );
+}
+
+export function pf2weaponForSneak(weapon) {
+  if (weapon) {
+    if (
+      weapon.weaponTraits.includes("Agile") ||
+      weapon.weaponTraits.includes("Finesse")
+    ) {
+      return true;
+    } else {
+      const ranged = weaponsPF2.rangeWeapons.includes(weapon);
+      if (ranged && !weapon.weaponTraits.includes("Thrown")) {
+          return true;
+      }
+    }
+  }
+  return false;
 }

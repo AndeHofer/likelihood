@@ -14,6 +14,7 @@ import {
   sortName,
   enrichDiceWithDamageType,
   dnd5weaponForSneak,
+  pf2weaponForSneak,
 } from "./helperFunctions";
 import CheckboxInput from "./components/CheckboxInput";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -31,6 +32,7 @@ class DamageCalculator extends React.Component {
       selectedPotencyRune: "0",
       criticalSpecialization: false,
       selectedRogueDnD5SneakDices: 0,
+      selectedRoguePF2SneakDices: 0,
     };
 
     this.handleStrengthChange = this.handleStrengthChange.bind(this);
@@ -43,6 +45,8 @@ class DamageCalculator extends React.Component {
     this.handleWeaponsUnitedChange = this.handleWeaponsUnitedChange.bind(this);
     this.handleRogueDnD5SneakDicesChange =
       this.handleRogueDnD5SneakDicesChange.bind(this);
+    this.handleRoguePF2SneakDicesChange =
+      this.handleRoguePF2SneakDicesChange.bind(this);
   }
 
   handleStrengthChange(value) {
@@ -83,6 +87,9 @@ class DamageCalculator extends React.Component {
       selected = weaponsPF2.rangeWeapons.find((x) => x.name === value);
     }
     this.setState({ selectedWeaponPF2: selected });
+    if (!pf2weaponForSneak(selected)) {
+      this.setState({ selectedRoguePF2SneakDices: 0 });
+    }
   }
 
   handleWeaponsUnitedChange(value) {
@@ -99,11 +106,20 @@ class DamageCalculator extends React.Component {
     }
     if (selectedPF2) {
       this.setState({ selectedWeaponPF2: selectedPF2 });
+      if (!pf2weaponForSneak(selectedPF2)) {
+        this.setState({ selectedRoguePF2SneakDices: 0 });
+      }
     }
   }
 
   handleRogueDnD5SneakDicesChange(value) {
+    console.log("handleRogueDnD5SneakDicesChange: " + value);
     this.setState({ selectedRogueDnD5SneakDices: value });
+  }
+
+  handleRoguePF2SneakDicesChange(value) {
+    console.log("handleRoguePF2SneakDicesChange: " + value);
+    this.setState({ selectedRoguePF2SneakDices: value });
   }
 
   render() {
@@ -115,12 +131,14 @@ class DamageCalculator extends React.Component {
       this.state.strength,
       this.state.selectedStrikingRune,
       this.state.criticalSpecialization,
-      this.state.selectedPotencyRune
+      this.state.selectedPotencyRune,
+      this.state.selectedRoguePF2SneakDices
     );
     const weaponResultDnD5 = calculateDnD5WeaponDamage(
       this.state.selectedWeaponDnD5,
       this.state.strength,
-      this.state.dexterity
+      this.state.dexterity,
+      this.state.selectedRogueDnD5SneakDices
     );
     const strikingRuneOptions = [
       { value: "0", label: "No" },
@@ -141,6 +159,14 @@ class DamageCalculator extends React.Component {
       { value: 8, label: "8d6" },
       { value: 9, label: "9d6" },
       { value: 10, label: "10d6" },
+    ];
+
+    const roguePF2SneakDices = [
+      { value: 0, label: "No" },
+      { value: 1, label: "1d6" },
+      { value: 2, label: "2d6" },
+      { value: 3, label: "3d6" },
+      { value: 4, label: "4d6" },
     ];
 
     const potencyRuneOptions = [
@@ -285,6 +311,16 @@ class DamageCalculator extends React.Component {
                   />
                 </div>
                 <br />
+                <div>
+                  <DynamicSelect
+                    options={roguePF2SneakDices}
+                    onValueChange={this.handleRoguePF2SneakDicesChange}
+                    doNotRenderEmpty={true}
+                    disabled={!pf2weaponForSneak(this.state.selectedWeaponPF2)}
+                    selected={this.state.selectedRoguePF2SneakDices}
+                  />{" "}
+                  Sneak Attack Dices
+                </div>
                 <div>
                   <DynamicSelect
                     options={strikingRuneOptions}
@@ -440,10 +476,6 @@ class DamageCalculator extends React.Component {
                   </table>
                 )}
               </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>TODO: bonus dices for rogues</td>
             </tr>
           </tbody>
         </table>
