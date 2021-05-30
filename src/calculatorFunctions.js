@@ -270,7 +270,7 @@ export function calculatePF2WeaponDamage(
     const max = countDice * diceValue + strengthNumber + sneakDices * 6;
     const medium = twoDecimalPlaces(
       Number(
-        ((1 + diceValue) * countDice) / 2 + strengthNumber + (3, 5 * sneakDices)
+        ((1 + diceValue) * countDice) / 2 + strengthNumber + (3.5 * sneakDices)
       )
     );
 
